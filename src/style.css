@@ -782,6 +782,12 @@ sub, small { font-size: 0.72em; }
 .reel__cap { text-align: center; margin-top: clamp(1rem, 3vw, 1.75rem); }
 .reel__label { color: var(--ink); }
 
+/* On phones, each slide fills the viewport so the bike sits centred
+   (not left-anchored with empty space on the right). */
+@media (max-width: 640px) {
+  .reel__item { width: 100%; }
+}
+
 /* ============================================================
    Configure — variant picker
    ============================================================ */
@@ -837,6 +843,8 @@ sub, small { font-size: 0.72em; }
 .configure__total-label { color: var(--slate-soft); }
 .configure__price { color: var(--ink); font-variant-numeric: tabular-nums; }
 .configure__sub { color: var(--slate); }
+.configure__star { color: var(--slate-soft); font-size: 0.5em; vertical-align: super; margin-left: 0.15em; }
+.configure__fine { color: var(--slate-soft); font-size: 0.62rem; line-height: 1.4; margin-top: 0.1rem; }
 .configure__summary .btn--solid { width: 100%; justify-content: center; }
 
 @media (max-width: 820px) {
