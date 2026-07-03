@@ -1,9 +1,65 @@
 # SESSION — Prisma One landing page
 
-_Last updated: 2026-06-27_
+_Last updated: 2026-07-03_
 
 A working log to pick the project back up. For strategic/visual context see
 `PRODUCT.md` and `DESIGN.md`.
+
+> **2026-07-03** — **Site is now TWO models + live in production.** Added a second bike
+> (**Prisma Terra**, a gravel bike) and shipped it to `prismacycling.ch` via Vercel.
+> Everything below the 2026-06-27 note is partly historical (single-page / turntable /
+> invented-spec era) — this entry is the current source of truth.
+>
+> **What changed today**
+> - **Two pages, header switch.** `index.html` = Aero (Prisma One). `gravel.html` = Gravel
+>   (Prisma Terra). Nav has an **Aero | Gravel** segmented switch (`.nav__models`) that
+>   navigates between them; active model highlighted. Present on both pages.
+> - **Multi-page build.** New `vite.config.js` (`rollupOptions.input` = index + gravel) so
+>   `npm run build` emits both. Dev server serves any root `.html`.
+> - **Gravel page** clones the Aero layout with gravel copy/specs (from an Alibaba/KOZO
+>   listing + the user's real photos). Real Terra studio photos live in
+>   `public/img/gravel/` as WebP: `prisma-terra-{side,front,rear,top,three-quarter}.webp`
+>   (converted from `product/prisma-terra-transparent-*.png` via `cwebp -q 82 -alpha_q 100`).
+>   Hero + anatomy use the **side** photo; the annotated anatomy callouts were **re-tuned by
+>   hand** to the Terra side image (image placed at x443 y200 w1014 h641 in the 1900×1040 SVG).
+>   Geometry reel = three-quarter · front · top · rear.
+> - **Configurator** (gravel): **Drivetrain** is the priced dimension —
+>   **Shimano GRX600 CHF 1'530** (default, matches the pictured bike) / **Wheeltop GEX 1×13
+>   wireless CHF 1'181**. Frame size (50/53/56/58/61) is free; Colour = Raw Silver / Phantom
+>   Black. Prices = base + **CHF 400** shipping fee (781→1181, 1130→1530). "**Pedals not
+>   included**" note. "Your build" price shows a small `*` → footnote "*Includes CHF 400
+>   shipping to our warehouse in Germany*" (added to **both** pages).
+> - **Shared JS generalized** (`src/main.ts`): configurator total now reads
+>   `input[data-price]:checked` and the summary joins all checked radios — one code path
+>   serves both pages. Aero page unchanged in behaviour (verified).
+> - **CSS fixes** (`src/style.css`): reel slides go **full-width < 640px** so the bike centres
+>   on mobile (was left-anchored); hero gets a **desktop-only right margin**
+>   (`.hero__grid { padding-right: var(--pad-x) }`) so the bike no longer bleeds to the edge —
+>   the `max-width:880px` mobile override (`padding-inline`) keeps mobile untouched.
+>
+> **Deploy / infra (LIVE)**
+> - **GitHub:** `git@github.com-luumos:francoluumos/prisma.git` on `main`. ⚠️ Must push via
+>   the **`github.com-luumos` SSH alias** (`~/.ssh/config` → `id_ed25519_luumos`, authenticates
+>   as `francoluumos`). The default `git@github.com` key is `francoseinerdq` and is **denied**.
+>   Remote is already set correctly, so `git push` just works.
+> - **Vercel:** project `luumos-projects/prisma`, auto-detects Vite, auto-deploys on push.
+>   `.claude/ .agents/ .codex/ .cursor/ .impeccable/` + `node_modules`/`dist` are gitignored.
+> - **Domain:** `prismacycling.ch` live, primary = **bare apex**, `www` **308-redirects** to it.
+>   DNS at **Hostpoint**: apex `A → 216.198.79.1`, `www CNAME → 12c6ccb1d92c0377.vercel-dns-017.com`,
+>   all mail records (MX/autoconfig/SPF) left intact. (Debugging note: `.ch` delegation lagged
+>   a few hours after same-day registration — was NXDOMAIN at `a.nic.ch` until SWITCH published.)
+>
+> **Pick up here next**
+> - When the user sends more/better gravel photos, replace the `public/img/gravel/*.webp`
+>   (same names) and re-verify anatomy callout alignment (`scripts/shot-section.mjs .anatomy`).
+> - Colour swatches are placeholders (Raw Silver / Phantom Black) carried from Aero — the
+>   real listing showed 4 colours; swap names/hex when known.
+> - Aero (`index.html`) still carries the **invented specs** flagged below; Gravel specs are
+>   real-ish (from the listing) but tyre data was contradictory (700c vs 29×2.1) — presented
+>   as gravel `700c / 29 × 2.1"`.
+> - QA loop: `npm run preview -- --port 4173` then `node scripts/shot-section.mjs <url> <sel> <label> [w] [h]`
+>   (drives system Chrome headless → `/tmp/shots/`). Config interactivity checked with an
+>   inline puppeteer script run **from the project dir** (needs local `node_modules`).
 
 > **2026-06-27** — Reworked around **real studio photos** (`product/IMG_2484*.jpeg`,
 > 5 views) that replaced the AI renders. Hero is now a **zoomed front-wheel crop**
@@ -16,8 +72,10 @@ A working log to pick the project back up. For strategic/visual context see
 
 ## What this is
 
-Launch landing page for the **Prisma One** — a premium **aero road bicycle**
-(single-piece carbon monocoque frame). Single-page marketing site.
+Launch site for **Prisma** bikes — now **two models**: **Prisma One** (aero road,
+`index.html`) and **Prisma Terra** (gravel, `gravel.html`), switchable from the header.
+Premium single-piece carbon frames. (Originally a single Prisma One page — see the
+2026-07-03 note above for the current two-model + deployed state.)
 
 > ⚠️ History: the project started as a literal "optical glass prism" (from the
 > mood board in `brainstorm/`). Mid-build the user dropped real bike renders into
