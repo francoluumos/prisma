@@ -294,8 +294,9 @@ sub, small { font-size: 0.72em; }
   grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
   align-items: center;
   gap: clamp(1rem, 3vw, 3rem);
-  /* align the copy with the shell/nav left edge, keep the bike full-bleed right */
+  /* align the copy with the shell/nav left edge; keep a small breathing margin on the right */
   padding-left: max(var(--pad-x), calc((100% - var(--shell)) / 2));
+  padding-right: var(--pad-x);
 }
 .hero__copy {
   position: relative;
