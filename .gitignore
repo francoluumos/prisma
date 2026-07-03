@@ -1,0 +1,12 @@
+node_modules
+dist
+*.local
+.DS_Store
+.vite
+
+# Local agent / editor tooling — not part of the site
+.claude/
+.agents/
+.codex/
+.cursor/
+.impeccable/

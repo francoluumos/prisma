@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Prisma One — Aero, distilled.</title>
+    <meta
+      name="description"
+      content="Prisma One is a single-piece carbon aero road bike, shaped in the wind tunnel and built around one idea: nothing between you and the road. First edition, numbered."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:title" content="Prisma One — Aero, distilled." />
+    <meta
+      property="og:description"
+      content="A single-piece carbon aero road bike. Nothing between you and the road."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/img/prisma-one-profile.webp" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="scroll-progress" data-progress aria-hidden="true"></div>
+
+    <!-- ───────────────────────── Nav ───────────────────────── -->
+    <header class="nav" data-nav>
+      <div class="nav__inner shell">
+        <a class="wordmark" href="#top" aria-label="Prisma — home">
+          <span class="wordmark__glyph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+              <path d="M12 3 L21 19 L3 19 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span class="wordmark__text">PRISMA</span>
+        </a>
+        <div class="nav__models" role="group" aria-label="Choose a model">
+          <a class="nav__model is-active" href="/index.html" aria-current="page">Aero</a>
+          <a class="nav__model" href="/gravel.html">Gravel</a>
+        </div>
+        <nav class="nav__links" aria-label="Primary">
+          <a href="#frame">Frame</a>
+          <a href="#geometry">Geometry</a>
+          <a href="#spec">Spec</a>
+        </nav>
+        <a class="btn btn--ghost nav__cta" href="#reserve">Reserve</a>
+      </div>
+    </header>
+
+    <main id="main">
+      <span id="top"></span>
+
+      <!-- ───────────────────────── Hero ───────────────────────── -->
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero__aura" data-aura aria-hidden="true"></div>
+        <div class="hero__grid">
+          <div class="hero__copy">
+            <p class="kicker" data-reveal>Prisma One — Aero road</p>
+            <h1 class="hero__title display" id="hero-title" data-reveal>
+              Aero,<br />distilled.
+            </h1>
+            <p class="hero__lede body-lg" data-reveal>
+              A carbon-fibre monocoque frame, shaped in the wind tunnel and built
+              around one idea — put as little as possible between you and the road.
+            </p>
+            <div class="hero__actions" data-reveal>
+              <a class="btn btn--solid" href="#configure">Configure yours</a>
+              <a class="btn btn--text" href="#geometry">
+                See every angle
+                <svg viewBox="0 0 16 16" width="14" height="14" fill="none" aria-hidden="true">
+                  <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </a>
+            </div>
+            <dl class="hero__facts" data-reveal>
+              <div><dt>Weight</dt><dd>8.3 kg</dd></div>
+              <div><dt>Drivetrain</dt><dd>24-speed</dd></div>
+              <div><dt>Wheels</dt><dd>700c carbon</dd></div>
+            </dl>
+          </div>
+
+          <div class="hero__stage" data-tilt>
+            <img
+              class="hero__bike"
+              src="/img/prisma-one-side.webp"
+              width="1344" height="1007"
+              alt="The Prisma One aero road bike in full side profile — silver carbon-fibre frame on deep-section black carbon wheels."
+              fetchpriority="high"
+              data-tilt-target
+            />
+          </div>
+        </div>
+
+        <a class="hero__scroll" href="#manifesto" aria-label="Scroll to learn more">
+          <span class="hero__scroll-line" aria-hidden="true"></span>
+          <span class="mono">Scroll</span>
+        </a>
+      </section>
+
+      <!-- ─────────────────── Manifesto line ─────────────────── -->
+      <section class="manifesto shell" id="manifesto" aria-label="Statement">
+        <p class="manifesto__text display-sm" data-reveal>
+          Speed isn't added. It's everything you
+          <span class="manifesto__em">take away.</span>
+        </p>
+      </section>
+
+      <!-- ─────────────────── Anatomy / annotated side view ─────────────────── -->
+      <section class="showpiece" id="anatomy" aria-labelledby="anatomy-title">
+        <div class="shell">
+          <header class="section-head section-head--center" data-reveal>
+            <span class="spectral-rule spectral-rule--center" aria-hidden="true"></span>
+            <p class="mono">The shape of speed</p>
+            <h2 class="section-head__title display-sm" id="anatomy-title">Every part, in its place.</h2>
+          </header>
+
+          <figure class="anatomy" data-reveal>
+            <svg class="anatomy__svg" viewBox="0 0 1900 1040" role="img"
+                 aria-label="Annotated side view of the Prisma One, calling out the cockpit, frame, seatpost, drivetrain, tubes and wheels.">
+              <image href="/img/prisma-one-side.webp" x="443" y="140" width="1014" height="760" />
+
+              <!-- each callout: horizontal leader revealed on hover -->
+              <g class="anatomy__call" text-anchor="start" tabindex="0">
+                <rect class="anatomy__hit" x="20" y="299" width="380" height="98" />
+                <line class="anatomy__leader" x1="360" y1="345" x2="793" y2="345" />
+                <circle class="anatomy__ring" cx="793" cy="345" r="10" /><circle class="anatomy__dot" cx="793" cy="345" r="4.5" />
+                <text class="anatomy__num"  x="44" y="323">01</text>
+                <text class="anatomy__name" x="44" y="351">Aero seatpost</text>
+                <text class="anatomy__val"  x="44" y="379">T800 carbon · 350 mm</text>
+              </g>
+              <g class="anatomy__call" text-anchor="start" tabindex="0">
+                <rect class="anatomy__hit" x="20" y="413" width="380" height="98" />
+                <line class="anatomy__leader" x1="360" y1="459" x2="950" y2="459" />
+                <circle class="anatomy__ring" cx="950" cy="459" r="10" /><circle class="anatomy__dot" cx="950" cy="459" r="4.5" />
+                <text class="anatomy__num"  x="44" y="437">02</text>
+                <text class="anatomy__name" x="44" y="465">Carbon monocoque</text>
+                <text class="anatomy__val"  x="44" y="493">Carbon fibre · 8.3 kg</text>
+              </g>
+              <g class="anatomy__call" text-anchor="start" tabindex="0">
+                <rect class="anatomy__hit" x="20" y="672" width="380" height="98" />
+                <line class="anatomy__leader" x1="360" y1="718" x2="940" y2="718" />
+                <circle class="anatomy__ring" cx="940" cy="718" r="10" /><circle class="anatomy__dot" cx="940" cy="718" r="4.5" />
+                <text class="anatomy__num"  x="44" y="696">03</text>
+                <text class="anatomy__name" x="44" y="724">24-speed drivetrain</text>
+                <text class="anatomy__val"  x="44" y="752">Racing groupset</text>
+              </g>
+
+              <g class="anatomy__call" text-anchor="end" tabindex="0">
+                <rect class="anatomy__hit" x="1476" y="231" width="400" height="98" />
+                <line class="anatomy__leader" x1="1580" y1="277" x2="1254" y2="277" />
+                <circle class="anatomy__ring" cx="1254" cy="277" r="10" /><circle class="anatomy__dot" cx="1254" cy="277" r="4.5" />
+                <text class="anatomy__num"  x="1856" y="255">04</text>
+                <text class="anatomy__name" x="1856" y="283">Integrated cockpit</text>
+                <text class="anatomy__val"  x="1856" y="311">T800 bar · 80–100 mm</text>
+              </g>
+              <g class="anatomy__call" text-anchor="end" tabindex="0">
+                <rect class="anatomy__hit" x="1476" y="489" width="400" height="98" />
+                <line class="anatomy__leader" x1="1580" y1="535" x2="1051" y2="535" />
+                <circle class="anatomy__ring" cx="1051" cy="535" r="10" /><circle class="anatomy__dot" cx="1051" cy="535" r="4.5" />
+                <text class="anatomy__num"  x="1856" y="513">05</text>
+                <text class="anatomy__name" x="1856" y="541">Truncated airfoils</text>
+                <text class="anatomy__val"  x="1856" y="569">Wind-tunnel tube shapes</text>
+              </g>
+              <g class="anatomy__call" text-anchor="end" tabindex="0">
+                <rect class="anatomy__hit" x="1476" y="574" width="400" height="98" />
+                <line class="anatomy__leader" x1="1580" y1="620" x2="1315" y2="620" />
+                <circle class="anatomy__ring" cx="1315" cy="620" r="10" /><circle class="anatomy__dot" cx="1315" cy="620" r="4.5" />
+                <text class="anatomy__num"  x="1856" y="598">06</text>
+                <text class="anatomy__name" x="1856" y="626">700c carbon wheels</text>
+                <text class="anatomy__val"  x="1856" y="654">Hydraulic disc brakes</text>
+              </g>
+            </svg>
+
+            <div class="anatomy__mobile" aria-hidden="true">
+              <img src="/img/prisma-one-side.webp" width="1344" height="1007"
+                alt="Prisma One side profile" loading="lazy" />
+              <ul class="anatomy__list">
+                <li><span class="mono">01</span><b>Aero seatpost</b><span class="mono anatomy__lv">T800 · 350 mm</span></li>
+                <li><span class="mono">02</span><b>Carbon monocoque</b><span class="mono anatomy__lv">8.3 kg</span></li>
+                <li><span class="mono">03</span><b>24-speed drivetrain</b><span class="mono anatomy__lv">Racing</span></li>
+                <li><span class="mono">04</span><b>Integrated cockpit</b><span class="mono anatomy__lv">T800 bar</span></li>
+                <li><span class="mono">05</span><b>Truncated airfoils</b><span class="mono anatomy__lv">Wind-tunnel</span></li>
+                <li><span class="mono">06</span><b>700c carbon wheels</b><span class="mono anatomy__lv">Hydraulic disc</span></li>
+              </ul>
+            </div>
+          </figure>
+        </div>
+      </section>
+
+      <!-- ───────────────────── Frame / features ───────────────────── -->
+      <section class="optics shell" id="frame" aria-labelledby="frame-title">
+        <header class="section-head" data-reveal>
+          <h2 class="section-head__title display-sm" id="frame-title">
+            One frame. Nothing spare.
+          </h2>
+        </header>
+
+        <div class="features">
+          <article class="feature" data-reveal>
+            <p class="mono feature__tag">Frame</p>
+            <h3 class="feature__title">One piece of carbon</h3>
+            <p class="feature__body body">
+              A carbon-fibre monocoque, laid up and cured as a single shell. No bonded
+              junctions to add weight or flex — the whole frame works as one structure,
+              shaped tube by tube in the wind tunnel.
+            </p>
+            <p class="mono feature__spec">Carbon fibre · 8.3 kg net</p>
+          </article>
+
+          <article class="feature" data-reveal>
+            <p class="mono feature__tag">Build</p>
+            <h3 class="feature__title">Built without seams</h3>
+            <p class="feature__body body">
+              A high-modulus T800 carbon cockpit, internal routing, and a 24-speed
+              drivetrain on hydraulic disc brakes. Nothing breaks the airflow and nothing
+              rattles — the cockpit reads as one clean line from saddle to axle.
+            </p>
+            <p class="mono feature__spec">24-speed · hydraulic disc</p>
+          </article>
+
+          <article class="feature" data-reveal>
+            <p class="mono feature__tag">Ride</p>
+            <h3 class="feature__title">Holds a line</h3>
+            <p class="feature__body body">
+              A rigid racing frame on 700c carbon wheels: light, stiff and planted at
+              speed, the deep-section rims carrying momentum on the flat while the carbon
+              tubes soak up the road.
+            </p>
+            <p class="mono feature__spec">700c carbon · 150 kg load</p>
+          </article>
+        </div>
+      </section>
+
+      <!-- ───────────────────── Geometry / every angle ───────────────────── -->
+      <section class="geometry" id="geometry" aria-labelledby="geometry-title">
+        <div class="shell">
+          <header class="section-head section-head--center" data-reveal>
+            <span class="spectral-rule spectral-rule--center" aria-hidden="true"></span>
+            <h2 class="section-head__title display-sm" id="geometry-title">
+              Resolved from every angle.
+            </h2>
+          </header>
+        </div>
+
+        <div class="reel" data-reel>
+          <figure class="reel__item" data-reveal>
+            <img class="reel__img" src="/img/prisma-one-three-quarter.webp" width="649" height="981"
+              alt="Prisma One — three-quarter view" loading="lazy" />
+            <figcaption class="reel__cap">
+              <span class="spectral-rule spectral-rule--center" aria-hidden="true"></span>
+              <p class="mono reel__label">Three-quarter · 45°</p>
+            </figcaption>
+          </figure>
+          <figure class="reel__item" data-reveal>
+            <img class="reel__img" src="/img/prisma-one-top.webp" width="667" height="1013"
+              alt="Prisma One — top-down view" loading="lazy" />
+            <figcaption class="reel__cap">
+              <span class="spectral-rule spectral-rule--center" aria-hidden="true"></span>
+              <p class="mono reel__label">Top-down</p>
+            </figcaption>
+          </figure>
+          <figure class="reel__item" data-reveal>
+            <img class="reel__img" src="/img/prisma-one-front.webp" width="671" height="1009"
+              alt="Prisma One — head-on, front" loading="lazy" />
+            <figcaption class="reel__cap">
+              <span class="spectral-rule spectral-rule--center" aria-hidden="true"></span>
+              <p class="mono reel__label">Head-on · 0°</p>
+            </figcaption>
+          </figure>
+          <figure class="reel__item" data-reveal>
+            <img class="reel__img" src="/img/prisma-one-rear.webp" width="671" height="1008"
+              alt="Prisma One — from the rear" loading="lazy" />
+            <figcaption class="reel__cap">
+              <span class="spectral-rule spectral-rule--center" aria-hidden="true"></span>
+              <p class="mono reel__label">From the rear · 180°</p>
+            </figcaption>
+          </figure>
+        </div>
+
+        <div class="shell">
+          <p class="geometry__note body" data-reveal>
+            Shot from every side — three-quarter, top-down, head-on and rear — so nothing
+            about the shape stays hidden.
+          </p>
+        </div>
+      </section>
+
+      <!-- ───────────────────── Spec table ───────────────────── -->
+      <section class="spec shell" id="spec" aria-labelledby="spec-title">
+        <header class="section-head" data-reveal>
+          <h2 class="section-head__title display-sm" id="spec-title">Every measurement, on the record.</h2>
+        </header>
+
+        <dl class="spec__table" data-reveal>
+          <div class="spec__row"><dt>Type</dt><dd>Road bike — racing</dd></div>
+          <div class="spec__row"><dt>Frame</dt><dd>Carbon-fibre monocoque, rigid race</dd></div>
+          <div class="spec__row"><dt>Fork</dt><dd>Full carbon, carbon steerer</dd></div>
+          <div class="spec__row"><dt>Cockpit</dt><dd>T800 carbon bar, 80 / 100 mm</dd></div>
+          <div class="spec__row"><dt>Seatpost</dt><dd>T800 carbon, 350 mm</dd></div>
+          <div class="spec__row"><dt>Drivetrain</dt><dd>24-speed, multiple shift units</dd></div>
+          <div class="spec__row"><dt>Brakes</dt><dd>Hydraulic disc — always included</dd></div>
+          <div class="spec__row"><dt>Wheels</dt><dd>700c, carbon rims &amp; hubs</dd></div>
+          <div class="spec__row"><dt>Saddle</dt><dd>Padded, carbon base</dd></div>
+          <div class="spec__row"><dt>Weight</dt><dd>8.3 kg net · 11 kg gross</dd></div>
+          <div class="spec__row"><dt>Load capacity</dt><dd>150 kg</dd></div>
+          <div class="spec__row"><dt>Origin</dt><dd>Zhejiang, China</dd></div>
+          <div class="spec__row"><dt>Brand</dt><dd>Prisma</dd></div>
+          <div class="spec__row"><dt>Edition</dt><dd>First edition, individually numbered</dd></div>
+        </dl>
+      </section>
+
+      <!-- ───────────────────── Configure / variants ───────────────────── -->
+      <section class="configure shell" id="configure" aria-labelledby="configure-title">
+        <header class="section-head" data-reveal>
+          <h2 class="section-head__title display-sm" id="configure-title">Build yours.</h2>
+          <p class="configure__note mono">Hydraulic disc brakes &amp; 700c carbon wheels, included on every build.</p>
+        </header>
+
+        <form class="configure__panel" data-configure data-reveal>
+          <fieldset class="variant">
+            <legend class="variant__legend mono">Shift unit</legend>
+            <ul class="variant__list">
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="drivetrain" value="Wheeltop EDS-TX" data-price="1355" checked />
+                  <span class="variant__body">
+                    <span class="variant__name">Wheeltop EDS-TX</span>
+                    <span class="variant__meta mono">24-speed · mechanical</span>
+                  </span>
+                  <span class="variant__price">CHF 1'355</span>
+                </label>
+              </li>
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="drivetrain" value="Shimano 105" data-price="1376" />
+                  <span class="variant__body">
+                    <span class="variant__name">Shimano 105</span>
+                    <span class="variant__meta mono">24-speed · mechanical</span>
+                  </span>
+                  <span class="variant__price">CHF 1'376</span>
+                </label>
+              </li>
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="drivetrain" value="Shimano 105 Di2" data-price="1806" />
+                  <span class="variant__body">
+                    <span class="variant__name">Shimano 105 Di2</span>
+                    <span class="variant__meta mono">24-speed · electronic</span>
+                  </span>
+                  <span class="variant__price">CHF 1'806</span>
+                </label>
+              </li>
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="drivetrain" value="Shimano Ultegra Di2" data-price="2128" />
+                  <span class="variant__body">
+                    <span class="variant__name">Shimano Ultegra Di2</span>
+                    <span class="variant__meta mono">24-speed · electronic</span>
+                  </span>
+                  <span class="variant__price">CHF 2'128</span>
+                </label>
+              </li>
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="drivetrain" value="Shimano Dura-Ace Di2" data-price="2831" />
+                  <span class="variant__body">
+                    <span class="variant__name">Shimano Dura-Ace Di2</span>
+                    <span class="variant__meta mono">24-speed · electronic</span>
+                  </span>
+                  <span class="variant__price">CHF 2'831</span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
+
+          <div class="configure__side">
+          <fieldset class="variant">
+            <legend class="variant__legend mono">Colour</legend>
+            <ul class="variant__swatches">
+              <li>
+                <label class="swatch">
+                  <input type="radio" name="colour" value="Raw Silver" checked />
+                  <span class="swatch__chip" style="--swatch:#cfd2d6"></span>
+                  <span class="swatch__name mono">Raw Silver</span>
+                </label>
+              </li>
+              <li>
+                <label class="swatch">
+                  <input type="radio" name="colour" value="Phantom Black" />
+                  <span class="swatch__chip" style="--swatch:#2b2d31"></span>
+                  <span class="swatch__name mono">Phantom Black</span>
+                </label>
+              </li>
+            </ul>
+            <p class="variant__hint mono">More colours coming soon.</p>
+          </fieldset>
+
+          <div class="configure__summary">
+            <div class="configure__total">
+              <span class="mono configure__total-label">Your build</span>
+              <span class="configure__price display-sm" data-total>CHF 1'355</span>
+              <span class="configure__sub mono" data-summary>Wheeltop EDS-TX · Raw Silver</span>
+            </div>
+            <a class="btn btn--solid" href="#reserve">Reserve this build</a>
+          </div>
+          </div>
+        </form>
+      </section>
+
+      <!-- ───────────────────── Reserve ───────────────────── -->
+      <section class="reserve" id="reserve" aria-labelledby="reserve-title">
+        <div class="reserve__aura" data-aura aria-hidden="true"></div>
+        <div class="shell reserve__inner">
+          <div class="reserve__copy" data-reveal>
+            <p class="kicker">First edition</p>
+            <h2 class="reserve__title display-sm" id="reserve-title">
+              Reserve a first-edition Prisma One.
+            </h2>
+            <p class="reserve__body body">
+              The first run is numbered and limited. Leave your email to hold your size —
+              no charge until it ships.
+            </p>
+          </div>
+
+          <form class="reserve__form" data-reserve-form novalidate data-reveal>
+            <div class="field">
+              <label class="field__label mono" for="email">Email address</label>
+              <div class="field__row">
+                <input
+                  class="field__input"
+                  type="email"
+                  id="email"
+                  name="email"
+                  inputmode="email"
+                  autocomplete="email"
+                  placeholder="you@ride.cc"
+                  aria-describedby="email-msg"
+                  required
+                />
+                <button class="btn btn--solid field__submit" type="submit" data-submit>
+                  <span class="field__submit-label">Reserve</span>
+                </button>
+              </div>
+              <p class="field__msg mono" id="email-msg" data-msg aria-live="polite"></p>
+            </div>
+            <p class="reserve__fine mono">No charge today · Ships Q4 · Cancel anytime</p>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- ───────────────────── Footer ───────────────────── -->
+    <footer class="footer shell">
+      <div class="footer__brand">
+        <span class="wordmark__glyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+            <path d="M12 3 L21 19 L3 19 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="wordmark__text">PRISMA</span>
+      </div>
+      <p class="footer__line mono">Made to move · © 2026</p>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="#frame">Frame</a>
+        <a href="#spec">Spec</a>
+        <a href="#reserve">Reserve</a>
+      </nav>
+    </footer>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
