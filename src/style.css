@@ -853,6 +853,58 @@ sub, small { font-size: 0.72em; }
   .configure__summary { position: static; }
 }
 
+/* Frame-size legend now carries an inline "Size guide" trigger. */
+.variant__legend { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; }
+.size-guide__btn {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font-size: 0.62rem; color: var(--slate);
+  text-decoration: underline; text-underline-offset: 3px;
+  text-decoration-color: var(--hairline-ink);
+  transition: color 0.2s var(--ease-out), text-decoration-color 0.2s var(--ease-out);
+}
+.size-guide__btn:hover { color: var(--ink); text-decoration-color: var(--ink); }
+.size-guide__btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; border-radius: 2px; }
+
+/* ============================================================
+   Size-guide modal (native <dialog>)
+   ============================================================ */
+.size-modal {
+  border: 0; padding: 0; margin: auto;
+  width: min(560px, calc(100vw - 2rem));
+  background: transparent; color: var(--ink); overflow: visible;
+}
+.size-modal::backdrop { background: rgba(12, 12, 14, 0.5); backdrop-filter: blur(3px); }
+.size-modal__inner {
+  background: var(--paper); border: 1px solid var(--hairline); border-radius: 18px;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.28);
+}
+.size-modal__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; }
+.size-modal__title { color: var(--ink); }
+.size-modal__close {
+  border: 0; background: none; cursor: pointer; color: var(--slate-soft);
+  font-size: 1.05rem; line-height: 1; padding: 0.25rem; margin: -0.25rem -0.35rem 0 0;
+  transition: color 0.2s var(--ease-out);
+}
+.size-modal__close:hover { color: var(--ink); }
+.size-modal__close:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+.size-modal__lead { color: var(--slate); font-size: 0.9rem; line-height: 1.55; margin-bottom: 1.5rem; }
+.size-modal__scroll { overflow-x: auto; }
+.size-table { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+.size-table th {
+  font-family: var(--font-mono); font-weight: 500; font-size: 0.6rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--slate-soft);
+  text-align: left; padding: 0 0.9rem 0.7rem; white-space: nowrap;
+  border-bottom: 1px solid var(--hairline-ink);
+}
+.size-table td {
+  padding: 0.75rem 0.9rem; white-space: nowrap; font-size: 0.92rem;
+  color: var(--ink-body); border-bottom: 1px solid var(--hairline);
+}
+.size-table td:first-child { font-family: var(--font-display); font-weight: 600; color: var(--ink); }
+.size-table tbody tr:last-child td { border-bottom: 0; }
+.size-modal__fine { color: var(--slate-soft); font-size: 0.62rem; line-height: 1.5; margin-top: 1.25rem; }
+
 /* Content is visible by default. The hidden start state only applies once JS
    has confirmed it can animate (the .anim-ready gate), so no-JS and headless
    renders never ship blank. The reveal enhances an already-visible default. */

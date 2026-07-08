@@ -248,3 +248,19 @@ if (configForm) {
   configForm.addEventListener("change", update);
   update();
 }
+
+/* ----------------------------------------------------------------
+   Size guide — open the frame-size chart in a native <dialog>.
+   Closes on the ✕, on a backdrop click, or Esc (native).
+   ---------------------------------------------------------------- */
+const sizeModal = document.querySelector<HTMLDialogElement>("[data-size-modal]");
+if (sizeModal && typeof sizeModal.showModal === "function") {
+  document.querySelectorAll<HTMLButtonElement>("[data-size-guide]").forEach((btn) => {
+    btn.addEventListener("click", () => sizeModal.showModal());
+  });
+  sizeModal.querySelector<HTMLButtonElement>("[data-size-close]")?.addEventListener("click", () => sizeModal.close());
+  // Click on the backdrop (outside the inner card) closes the dialog.
+  sizeModal.addEventListener("click", (e) => {
+    if (e.target === sizeModal) sizeModal.close();
+  });
+}

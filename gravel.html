@@ -326,7 +326,7 @@
 
         <form class="configure__panel" data-configure data-reveal>
           <fieldset class="variant">
-            <legend class="variant__legend mono">Frame size</legend>
+            <legend class="variant__legend mono">Frame size<button type="button" class="size-guide__btn mono" data-size-guide>Size&nbsp;guide</button></legend>
             <ul class="variant__list">
               <li>
                 <label class="variant__card">
@@ -436,6 +436,31 @@
           </div>
           </div>
         </form>
+
+        <dialog class="size-modal" data-size-modal aria-labelledby="size-modal-title">
+          <div class="size-modal__inner">
+            <header class="size-modal__head">
+              <h3 class="size-modal__title display-sm" id="size-modal-title">Frame size guide</h3>
+              <button type="button" class="size-modal__close" data-size-close aria-label="Close size guide">✕</button>
+            </header>
+            <p class="size-modal__lead">Heights are a starting point. Inseam, reach and riding style matter too — gravel geometry runs a touch more upright, so if you're between two sizes, the smaller frame gives a more comfortable, controllable ride.</p>
+            <div class="size-modal__scroll">
+              <table class="size-table">
+                <thead>
+                  <tr><th>Frame</th><th>Rider height</th><th>Inseam</th><th>Wheel</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Size 50</td><td>165–172 cm</td><td>73–79 cm</td><td>700c</td></tr>
+                  <tr><td>Size 53</td><td>170–178 cm</td><td>77–83 cm</td><td>700c</td></tr>
+                  <tr><td>Size 56</td><td>176–184 cm</td><td>81–87 cm</td><td>700c</td></tr>
+                  <tr><td>Size 58</td><td>182–190 cm</td><td>85–91 cm</td><td>700c</td></tr>
+                  <tr><td>Size 61</td><td>188–196 cm</td><td>89–95 cm</td><td>700c</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="size-modal__fine mono">Frame size is the measured seat-tube length in cm. Still between sizes? Reserve your build — we confirm fit with you before it ships.</p>
+          </div>
+        </dialog>
       </section>
 
       <!-- ───────────────────── Reserve ───────────────────── -->

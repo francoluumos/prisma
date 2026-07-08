@@ -325,6 +325,40 @@
 
         <form class="configure__panel" data-configure data-reveal>
           <fieldset class="variant">
+            <legend class="variant__legend mono">Frame size<button type="button" class="size-guide__btn mono" data-size-guide>Size&nbsp;guide</button></legend>
+            <ul class="variant__list">
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="size" value="Size 48" />
+                  <span class="variant__body">
+                    <span class="variant__name">Size 48</span>
+                    <span class="variant__meta mono">700c · rider 166–172 cm</span>
+                  </span>
+                </label>
+              </li>
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="size" value="Size 51" checked />
+                  <span class="variant__body">
+                    <span class="variant__name">Size 51</span>
+                    <span class="variant__meta mono">700c · rider 172–178 cm</span>
+                  </span>
+                </label>
+              </li>
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="size" value="Size 54" />
+                  <span class="variant__body">
+                    <span class="variant__name">Size 54</span>
+                    <span class="variant__meta mono">700c · rider 178–187 cm</span>
+                  </span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
+
+          <div class="configure__side">
+          <fieldset class="variant">
             <legend class="variant__legend mono">Shift unit</legend>
             <ul class="variant__list">
               <li>
@@ -380,7 +414,6 @@
             </ul>
           </fieldset>
 
-          <div class="configure__side">
           <fieldset class="variant">
             <legend class="variant__legend mono">Colour</legend>
             <ul class="variant__swatches">
@@ -406,13 +439,36 @@
             <div class="configure__total">
               <span class="mono configure__total-label">Your build</span>
               <span class="configure__price display-sm"><span data-total>CHF 1'355</span><sup class="configure__star">*</sup></span>
-              <span class="configure__sub mono" data-summary>Wheeltop EDS-TX · Raw Silver</span>
+              <span class="configure__sub mono" data-summary>Size 51 · Wheeltop EDS-TX · Raw Silver</span>
               <span class="configure__fine mono">*&nbsp;Includes CHF 400 shipping to our warehouse in Germany.</span>
             </div>
             <a class="btn btn--solid" href="#reserve">Reserve this build</a>
           </div>
           </div>
         </form>
+
+        <dialog class="size-modal" data-size-modal aria-labelledby="size-modal-title">
+          <div class="size-modal__inner">
+            <header class="size-modal__head">
+              <h3 class="size-modal__title display-sm" id="size-modal-title">Frame size guide</h3>
+              <button type="button" class="size-modal__close" data-size-close aria-label="Close size guide">✕</button>
+            </header>
+            <p class="size-modal__lead">Heights are a starting point. Inseam, reach and riding style matter too — on an aero build, riders between two sizes usually size down for a sharper, more aerodynamic position.</p>
+            <div class="size-modal__scroll">
+              <table class="size-table">
+                <thead>
+                  <tr><th>Frame</th><th>Rider height</th><th>Inseam</th><th>Wheel</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Size 48</td><td>166–172 cm</td><td>74–79 cm</td><td>700c</td></tr>
+                  <tr><td>Size 51</td><td>172–178 cm</td><td>78–83 cm</td><td>700c</td></tr>
+                  <tr><td>Size 54</td><td>178–187 cm</td><td>82–88 cm</td><td>700c</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="size-modal__fine mono">Frame size is the measured seat-tube length in cm. Still between sizes? Reserve your build — we confirm fit with you before it ships.</p>
+          </div>
+        </dialog>
       </section>
 
       <!-- ───────────────────── Reserve ───────────────────── -->
