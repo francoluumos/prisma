@@ -250,17 +250,22 @@ if (configForm) {
 }
 
 /* ----------------------------------------------------------------
-   Size guide — open the frame-size chart in a native <dialog>.
+   Size guide + geometry — open a chart in a native <dialog>.
    Closes on the ✕, on a backdrop click, or Esc (native).
    ---------------------------------------------------------------- */
-const sizeModal = document.querySelector<HTMLDialogElement>("[data-size-modal]");
-if (sizeModal && typeof sizeModal.showModal === "function") {
-  document.querySelectorAll<HTMLButtonElement>("[data-size-guide]").forEach((btn) => {
-    btn.addEventListener("click", () => sizeModal.showModal());
+function wireModal(modalAttr: string, openAttr: string, closeAttr: string): void {
+  const modal = document.querySelector<HTMLDialogElement>(`[${modalAttr}]`);
+  if (!modal || typeof modal.showModal !== "function") return;
+
+  document.querySelectorAll<HTMLButtonElement>(`[${openAttr}]`).forEach((btn) => {
+    btn.addEventListener("click", () => modal.showModal());
   });
-  sizeModal.querySelector<HTMLButtonElement>("[data-size-close]")?.addEventListener("click", () => sizeModal.close());
+  modal.querySelector<HTMLButtonElement>(`[${closeAttr}]`)?.addEventListener("click", () => modal.close());
   // Click on the backdrop (outside the inner card) closes the dialog.
-  sizeModal.addEventListener("click", (e) => {
-    if (e.target === sizeModal) sizeModal.close();
+  modal.addEventListener("click", (e) => {
+    if (e.target === modal) modal.close();
   });
 }
+
+wireModal("data-size-modal", "data-size-guide", "data-size-close");
+wireModal("data-geo-modal", "data-geo-guide", "data-geo-close");

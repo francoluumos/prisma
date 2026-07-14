@@ -325,7 +325,7 @@
 
         <form class="configure__panel" data-configure data-reveal>
           <fieldset class="variant">
-            <legend class="variant__legend mono">Frame size<button type="button" class="size-guide__btn mono" data-size-guide>Size&nbsp;guide</button></legend>
+            <legend class="variant__legend mono">Frame size<span class="variant__legend-links"><button type="button" class="size-guide__btn mono" data-size-guide>Size&nbsp;guide</button><button type="button" class="size-guide__btn mono" data-geo-guide>Geometry</button></span></legend>
             <ul class="variant__list">
               <li>
                 <label class="variant__card">
@@ -467,6 +467,44 @@
               </table>
             </div>
             <p class="size-modal__fine mono">Frame size is the measured seat-tube length in cm. Still between sizes? Reserve your build — we confirm fit with you before it ships.</p>
+          </div>
+        </dialog>
+
+        <dialog class="size-modal size-modal--geo" data-geo-modal aria-labelledby="geo-modal-title">
+          <div class="size-modal__inner">
+            <header class="size-modal__head">
+              <h3 class="size-modal__title display-sm" id="geo-modal-title">Frame geometry</h3>
+              <button type="button" class="size-modal__close" data-geo-close aria-label="Close geometry">✕</button>
+            </header>
+            <p class="size-modal__lead">Every number of the Prisma One frame, per size. Stack and reach are the two that decide how a bike fits — the rest is what gives it its race position.</p>
+
+            <figure class="geo-figure">
+              <img src="/img/prisma-one-geometry.webp" alt="Technical drawing of the Prisma One frame with the geometry measurements labelled." width="595" height="437" loading="lazy" decoding="async" />
+            </figure>
+
+            <div class="size-modal__scroll">
+              <table class="size-table geo-table">
+                <thead>
+                  <tr><th>Measurement</th><th>Size 48</th><th>Size 51</th><th>Size 54</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td>Seat tube (ST)</td><td>473</td><td>503</td><td>533</td></tr>
+                  <tr><td>Top tube (TT)</td><td>533</td><td>549</td><td>559</td></tr>
+                  <tr><td>Seat angle (SA)</td><td>73.5°</td><td>73.5°</td><td>73.5°</td></tr>
+                  <tr><td>Head angle (HA)</td><td>71.5°</td><td>72.75°</td><td>73.25°</td></tr>
+                  <tr><td>Head tube (HT)</td><td>106</td><td>123</td><td>144</td></tr>
+                  <tr><td>Reach</td><td>378</td><td>390</td><td>393</td></tr>
+                  <tr><td>Stack</td><td>521</td><td>539</td><td>560</td></tr>
+                  <tr><td>Chainstay (RC)</td><td>410</td><td>410</td><td>410</td></tr>
+                  <tr><td>Front centre (FC)</td><td>577</td><td>584</td><td>589</td></tr>
+                  <tr><td>Wheelbase (WB)</td><td>976</td><td>983</td><td>988</td></tr>
+                  <tr><td>BB drop</td><td>72</td><td>70</td><td>70</td></tr>
+                  <tr><td>Fork rake (FR)</td><td>42</td><td>42</td><td>42</td></tr>
+                  <tr><td>Fork length (FL)</td><td>380</td><td>380</td><td>380</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="size-modal__fine mono">All measurements in mm unless marked °. Tyre clearance 700 × 32C · bottom bracket T47.</p>
           </div>
         </dialog>
       </section>
