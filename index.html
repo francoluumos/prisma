@@ -407,16 +407,6 @@
                   </span>
                 </label>
               </li>
-              <li>
-                <label class="swatch">
-                  <input type="radio" name="colour" value="Crow Black" data-preview="/img/prisma-aero-crow-black-side.webp" data-finish="Matte" />
-                  <span class="swatch__chip" style="--swatch:#111214"></span>
-                  <span class="swatch__body">
-                    <span class="swatch__name">Crow Black</span>
-                    <span class="swatch__finish mono">Matte</span>
-                  </span>
-                </label>
-              </li>
             </ul>
           </fieldset>
 
@@ -481,6 +471,13 @@
             <div class="configure__bar-info">
               <span class="configure__sub mono" data-summary>Size 51 · Wheeltop EDS-TX · Moon Silver</span>
               <span class="configure__fine mono">*&nbsp;Includes CHF 400 to our German warehouse &amp; CHF 59 flat-rate delivery within Switzerland.</span>
+            </div>
+            <div class="configure__discount">
+              <div class="configure__discount-row">
+                <input type="text" class="configure__discount-input" name="discount" placeholder="Discount code" aria-label="Discount code" autocomplete="off" data-discount-input />
+                <button type="button" class="configure__discount-apply" data-discount-apply>Apply</button>
+              </div>
+              <span class="configure__discount-msg mono" data-discount-msg aria-live="polite"></span>
             </div>
             <div class="configure__bar-total">
               <span class="mono configure__total-label">Your build</span>

@@ -239,13 +239,21 @@ if (configForm) {
   const previewLabelEl = configForm.querySelector<HTMLElement>("[data-colour-label]");
   const previewFinishEl = configForm.querySelector<HTMLElement>("[data-colour-finish]");
   const fmt = (n: number) => "CHF " + n.toLocaleString("en-US").replace(/,/g, "'");
+
+  // Discount codes — add real promos here, e.g. { LAUNCH10: 0.1 } for 10% off.
+  const CODES: Record<string, number> = {};
+  let discountRate = 0;
+
   const update = () => {
     // The priced choice is whichever checked radio carries a data-price.
     const priced = configForm.querySelector<HTMLInputElement>("input[data-price]:checked");
     const checked = Array.from(
       configForm.querySelectorAll<HTMLInputElement>('input[type="radio"]:checked')
     );
-    if (priced && totalEl) totalEl.textContent = fmt(Number(priced.dataset.price || 0));
+    if (priced && totalEl) {
+      const net = Math.round(Number(priced.dataset.price || 0) * (1 - discountRate));
+      totalEl.textContent = fmt(net);
+    }
     if (summaryEl) summaryEl.textContent = checked.map((i) => i.value).join(" · ");
 
     // Swap the left-column preview to the chosen colour.
@@ -260,6 +268,32 @@ if (configForm) {
     }
   };
   configForm.addEventListener("change", update);
+
+  // Discount code: apply on click or Enter; recalculates the total.
+  const discountInput = configForm.querySelector<HTMLInputElement>("[data-discount-input]");
+  const discountApply = configForm.querySelector<HTMLButtonElement>("[data-discount-apply]");
+  const discountMsg = configForm.querySelector<HTMLElement>("[data-discount-msg]");
+  const applyDiscount = () => {
+    const code = (discountInput?.value || "").trim().toUpperCase();
+    if (!code) {
+      discountRate = 0;
+      if (discountMsg) { discountMsg.textContent = ""; discountMsg.removeAttribute("data-state"); }
+    } else if (code in CODES) {
+      discountRate = CODES[code];
+      if (discountMsg) { discountMsg.textContent = "−" + Math.round(discountRate * 100) + "% applied"; discountMsg.dataset.state = "ok"; }
+    } else {
+      discountRate = 0;
+      if (discountMsg) { discountMsg.textContent = "Code not recognised"; discountMsg.dataset.state = "err"; }
+    }
+    update();
+  };
+  discountApply?.addEventListener("click", applyDiscount);
+  discountInput?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") { e.preventDefault(); applyDiscount(); }
+  });
+  // No backend — never let the form navigate away on submit.
+  configForm.addEventListener("submit", (e) => e.preventDefault());
+
   update();
 }
 
