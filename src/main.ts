@@ -229,7 +229,7 @@ if (!reduceMotion) {
 
 /* ----------------------------------------------------------------
    Configurator — pick a shift unit + colour, update price + summary.
-   Prices are base + CHF 400 fee, rounded to the whole franc (data-price).
+   Prices are base + CHF 400 warehouse fee + CHF 59 Swiss delivery (data-price).
    ---------------------------------------------------------------- */
 const configForm = document.querySelector<HTMLFormElement>("[data-configure]");
 if (configForm) {

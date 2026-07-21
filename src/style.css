@@ -817,19 +817,28 @@ sub, small { font-size: 0.72em; }
 .variant__card:has(input:checked) { border-color: var(--ink); background: var(--paper-sunk); }
 .variant__card:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
 
-.variant__swatches { list-style: none; margin: 0; padding: 0; display: flex; gap: 1.25rem; flex-wrap: wrap; }
-.swatch { display: inline-flex; flex-direction: column; align-items: center; gap: 0.55rem; cursor: pointer; }
-.swatch input { position: absolute; opacity: 0; width: 0; height: 0; }
-.swatch__chip {
-  width: 46px; height: 46px; border-radius: 50%;
-  background: var(--swatch); border: 1px solid var(--hairline-ink);
-  box-shadow: 0 1px 4px rgba(0,0,0,0.12);
-  transition: transform 0.2s var(--ease-out);
+.variant__swatches {
+  list-style: none; margin: 0; padding: 0;
+  display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+  gap: 0.6rem;
 }
-.swatch:hover .swatch__chip { transform: translateY(-2px); }
-.swatch input:checked + .swatch__chip { outline: 2px solid var(--ink); outline-offset: 3px; }
-.swatch__name { color: var(--slate); font-size: 0.62rem; }
-.variant__hint { color: var(--slate-soft); margin-top: 1rem; }
+.swatch {
+  position: relative; display: flex; flex-direction: column; gap: 0.5rem;
+  padding: 0.5rem 0.5rem 0.7rem; border: 1px solid var(--hairline); border-radius: 12px;
+  cursor: pointer; transition: border-color 0.25s var(--ease-out), background 0.25s var(--ease-out), transform 0.2s var(--ease-out);
+}
+.swatch:hover { border-color: var(--hairline-ink); transform: translateY(-2px); }
+.swatch input { position: absolute; opacity: 0; width: 0; height: 0; }
+.swatch__preview {
+  display: block; border-radius: 8px; overflow: hidden;
+  background: var(--paper-sunk); aspect-ratio: 4 / 3;
+}
+.swatch__preview img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.swatch__body { display: flex; flex-direction: column; gap: 0.15rem; padding-inline: 0.15rem; }
+.swatch__name { font-family: var(--font-display); font-weight: 600; font-size: 0.92rem; color: var(--ink); line-height: 1.15; }
+.swatch__finish { color: var(--slate-soft); font-size: 0.6rem; }
+.swatch:has(input:checked) { border-color: var(--ink); background: var(--paper-sunk); }
+.swatch:has(input:focus-visible) { outline: 2px solid var(--ink); outline-offset: 2px; }
 
 .configure__summary {
   position: sticky; top: 92px;
