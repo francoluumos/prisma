@@ -324,6 +324,11 @@
         </header>
 
         <form class="configure__panel" data-configure data-reveal>
+          <div class="configure__lead">
+          <figure class="configure__preview">
+            <img data-colour-preview src="/img/prisma-aero-moon-silver-side.webp" width="520" height="390" alt="Prisma One in the selected colour" loading="lazy" decoding="async" />
+            <figcaption class="configure__preview-cap mono"><span data-colour-label>Moon Silver</span> · <span data-colour-finish>Metallic</span></figcaption>
+          </figure>
           <fieldset class="variant">
             <legend class="variant__legend mono">Frame size<span class="variant__legend-links"><button type="button" class="size-guide__btn mono" data-size-guide>Size&nbsp;guide</button><button type="button" class="size-guide__btn mono" data-geo-guide>Geometry</button></span></legend>
             <ul class="variant__list">
@@ -356,6 +361,7 @@
               </li>
             </ul>
           </fieldset>
+          </div>
 
           <div class="configure__side">
           <fieldset class="variant">
@@ -419,10 +425,8 @@
             <ul class="variant__swatches">
               <li>
                 <label class="swatch">
-                  <input type="radio" name="colour" value="Moon Silver" checked />
-                  <span class="swatch__preview">
-                    <img src="/img/prisma-aero-moon-silver-side.webp" alt="Prisma Aero frame in Moon Silver" width="520" height="390" loading="lazy" decoding="async" />
-                  </span>
+                  <input type="radio" name="colour" value="Moon Silver" data-preview="/img/prisma-aero-moon-silver-side.webp" data-finish="Metallic" checked />
+                  <span class="swatch__chip" style="--swatch:#a3b0bb"></span>
                   <span class="swatch__body">
                     <span class="swatch__name">Moon Silver</span>
                     <span class="swatch__finish mono">Metallic</span>
@@ -431,10 +435,8 @@
               </li>
               <li>
                 <label class="swatch">
-                  <input type="radio" name="colour" value="Bordeaux Red" />
-                  <span class="swatch__preview">
-                    <img src="/img/prisma-aero-bordeaux-red-side.webp" alt="Prisma Aero frame in Bordeaux Red" width="520" height="390" loading="lazy" decoding="async" />
-                  </span>
+                  <input type="radio" name="colour" value="Bordeaux Red" data-preview="/img/prisma-aero-bordeaux-red-side.webp" data-finish="Metallic" />
+                  <span class="swatch__chip" style="--swatch:#623c62"></span>
                   <span class="swatch__body">
                     <span class="swatch__name">Bordeaux Red</span>
                     <span class="swatch__finish mono">Metallic</span>
@@ -443,10 +445,8 @@
               </li>
               <li>
                 <label class="swatch">
-                  <input type="radio" name="colour" value="Sapphire Blue" />
-                  <span class="swatch__preview">
-                    <img src="/img/prisma-aero-sapphire-blue-side.webp" alt="Prisma Aero frame in Sapphire Blue" width="520" height="390" loading="lazy" decoding="async" />
-                  </span>
+                  <input type="radio" name="colour" value="Sapphire Blue" data-preview="/img/prisma-aero-sapphire-blue-side.webp" data-finish="Metallic" />
+                  <span class="swatch__chip" style="--swatch:#0351a3"></span>
                   <span class="swatch__body">
                     <span class="swatch__name">Sapphire Blue</span>
                     <span class="swatch__finish mono">Metallic</span>
@@ -455,10 +455,8 @@
               </li>
               <li>
                 <label class="swatch">
-                  <input type="radio" name="colour" value="Olive Green" />
-                  <span class="swatch__preview">
-                    <img src="/img/prisma-aero-olive-green-side.webp" alt="Prisma Aero frame in Olive Green" width="520" height="390" loading="lazy" decoding="async" />
-                  </span>
+                  <input type="radio" name="colour" value="Olive Green" data-preview="/img/prisma-aero-olive-green-side.webp" data-finish="Matte" />
+                  <span class="swatch__chip" style="--swatch:#596553"></span>
                   <span class="swatch__body">
                     <span class="swatch__name">Olive Green</span>
                     <span class="swatch__finish mono">Matte</span>
@@ -467,10 +465,8 @@
               </li>
               <li>
                 <label class="swatch">
-                  <input type="radio" name="colour" value="Crow Black" />
-                  <span class="swatch__preview">
-                    <img src="/img/prisma-aero-crow-black-side.webp" alt="Prisma Aero frame in Crow Black" width="520" height="390" loading="lazy" decoding="async" />
-                  </span>
+                  <input type="radio" name="colour" value="Crow Black" data-preview="/img/prisma-aero-crow-black-side.webp" data-finish="Matte" />
+                  <span class="swatch__chip" style="--swatch:#111214"></span>
                   <span class="swatch__body">
                     <span class="swatch__name">Crow Black</span>
                     <span class="swatch__finish mono">Matte</span>

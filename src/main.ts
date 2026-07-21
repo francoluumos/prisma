@@ -235,6 +235,9 @@ const configForm = document.querySelector<HTMLFormElement>("[data-configure]");
 if (configForm) {
   const totalEl = configForm.querySelector<HTMLElement>("[data-total]");
   const summaryEl = configForm.querySelector<HTMLElement>("[data-summary]");
+  const previewEl = configForm.querySelector<HTMLImageElement>("[data-colour-preview]");
+  const previewLabelEl = configForm.querySelector<HTMLElement>("[data-colour-label]");
+  const previewFinishEl = configForm.querySelector<HTMLElement>("[data-colour-finish]");
   const fmt = (n: number) => "CHF " + n.toLocaleString("en-US").replace(/,/g, "'");
   const update = () => {
     // The priced choice is whichever checked radio carries a data-price.
@@ -244,6 +247,17 @@ if (configForm) {
     );
     if (priced && totalEl) totalEl.textContent = fmt(Number(priced.dataset.price || 0));
     if (summaryEl) summaryEl.textContent = checked.map((i) => i.value).join(" · ");
+
+    // Swap the left-column preview to the chosen colour.
+    const colour = configForm.querySelector<HTMLInputElement>('input[name="colour"]:checked');
+    if (colour) {
+      if (previewEl && colour.dataset.preview) {
+        previewEl.src = colour.dataset.preview;
+        previewEl.alt = "Prisma One in " + colour.value;
+      }
+      if (previewLabelEl) previewLabelEl.textContent = colour.value;
+      if (previewFinishEl && colour.dataset.finish) previewFinishEl.textContent = colour.dataset.finish;
+    }
   };
   configForm.addEventListener("change", update);
   update();
