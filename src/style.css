@@ -856,8 +856,6 @@ sub, small { font-size: 0.72em; }
 .configure__bar {
   grid-column: 1 / -1;
   position: sticky; bottom: clamp(0.75rem, 2vw, 1.25rem); z-index: 20;
-  width: min(100vw - 2.5rem, 1560px);
-  margin-left: 50%; transform: translateX(-50%);
   margin-top: clamp(1.5rem, 4vw, 2.5rem);
   display: flex; align-items: center; gap: clamp(1rem, 3vw, 2.5rem); flex-wrap: wrap;
   padding: clamp(0.9rem, 2vw, 1.25rem) clamp(1.1rem, 3vw, 1.9rem);
