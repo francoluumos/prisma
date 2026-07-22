@@ -475,29 +475,69 @@
               </li>
             </ul>
           </fieldset>
+
+          <fieldset class="variant">
+            <legend class="variant__legend mono">Pedals</legend>
+            <ul class="variant__list">
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="pedals" value="No pedals" data-price="0" checked />
+                  <span class="variant__body">
+                    <span class="variant__name">No pedals</span>
+                    <span class="variant__meta mono">Bring your own</span>
+                  </span>
+                  <span class="variant__price">Included</span>
+                </label>
+              </li>
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="pedals" value="Shimano PD RS 500" data-price="53" />
+                  <span class="variant__body">
+                    <span class="variant__name">Shimano PD RS 500</span>
+                    <span class="variant__meta mono">SPD-SL · road clipless</span>
+                  </span>
+                  <span class="variant__price">+ CHF 53</span>
+                </label>
+              </li>
+              <li>
+                <label class="variant__card">
+                  <input type="radio" name="pedals" value="Shimano Ultegra PD R8000" data-price="103" />
+                  <span class="variant__body">
+                    <span class="variant__name">Shimano Ultegra PD R8000</span>
+                    <span class="variant__meta mono">SPD-SL · carbon body</span>
+                  </span>
+                  <span class="variant__price">+ CHF 103</span>
+                </label>
+              </li>
+            </ul>
+          </fieldset>
           </div>
 
-          <div class="configure__bar">
-            <div class="configure__bar-inner shell">
-              <div class="configure__bar-info">
-                <span class="configure__sub mono" data-summary>Size 51 · Wheeltop EDS-TX · Moon Silver</span>
-                <span class="configure__fine mono">*&nbsp;Includes CHF 400 to our German warehouse &amp; CHF 59 flat-rate delivery within Switzerland.</span>
-              </div>
-              <div class="configure__discount">
-                <div class="configure__discount-row">
-                  <input type="text" class="configure__discount-input" name="discount" placeholder="Discount code" aria-label="Discount code" autocomplete="off" data-discount-input />
-                  <button type="button" class="configure__discount-apply" data-discount-apply>Apply</button>
-                </div>
-                <span class="configure__discount-msg mono" data-discount-msg aria-live="polite"></span>
-              </div>
-              <div class="configure__bar-total">
-                <span class="mono configure__total-label">Your build</span>
-                <span class="configure__price display-sm"><span data-total>CHF 1'414</span><sup class="configure__star">*</sup></span>
-              </div>
-              <a class="btn btn--solid" href="#reserve">Reserve this build</a>
-            </div>
-          </div>
         </form>
+
+        <!-- Checkout bar sits OUTSIDE the form: the form's reveal transform
+             would otherwise become the containing block for this fixed bar and
+             make it jump into view on scroll. -->
+        <div class="configure__bar">
+          <div class="configure__bar-inner shell">
+            <div class="configure__bar-info">
+              <span class="configure__sub mono" data-summary>Size 51 · Moon Silver · Wheeltop EDS-TX · No pedals</span>
+              <span class="configure__fine mono">*&nbsp;Includes CHF 400 to our German warehouse &amp; CHF 59 flat-rate delivery within Switzerland.</span>
+            </div>
+            <div class="configure__discount">
+              <div class="configure__discount-row">
+                <input type="text" class="configure__discount-input" name="discount" placeholder="Discount code" aria-label="Discount code" autocomplete="off" data-discount-input />
+                <button type="button" class="configure__discount-apply" data-discount-apply>Apply</button>
+              </div>
+              <span class="configure__discount-msg mono" data-discount-msg aria-live="polite"></span>
+            </div>
+            <div class="configure__bar-total">
+              <span class="mono configure__total-label">Your build</span>
+              <span class="configure__price display-sm"><span data-total>CHF 1'414</span><sup class="configure__star">*</sup></span>
+            </div>
+            <a class="btn btn--solid" href="#reserve">Reserve this build</a>
+          </div>
+        </div>
 
         <dialog class="size-modal" data-size-modal aria-labelledby="size-modal-title">
           <div class="size-modal__inner">

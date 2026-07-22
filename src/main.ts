@@ -233,8 +233,10 @@ if (!reduceMotion) {
    ---------------------------------------------------------------- */
 const configForm = document.querySelector<HTMLFormElement>("[data-configure]");
 if (configForm) {
-  const totalEl = configForm.querySelector<HTMLElement>("[data-total]");
-  const summaryEl = configForm.querySelector<HTMLElement>("[data-summary]");
+  // The checkout bar lives outside the form (so the reveal transform can't
+  // capture its fixed positioning), so its cells are queried from the document.
+  const totalEl = document.querySelector<HTMLElement>("[data-total]");
+  const summaryEl = document.querySelector<HTMLElement>("[data-summary]");
   const previewEl = configForm.querySelector<HTMLImageElement>("[data-colour-preview]");
   const previewLabelEl = configForm.querySelector<HTMLElement>("[data-colour-label]");
   const previewFinishEl = configForm.querySelector<HTMLElement>("[data-colour-finish]");
@@ -245,13 +247,13 @@ if (configForm) {
   let discountRate = 0;
 
   const update = () => {
-    // The priced choice is whichever checked radio carries a data-price.
-    const priced = configForm.querySelector<HTMLInputElement>("input[data-price]:checked");
+    // Total = the sum of every checked priced radio (drivetrain + pedals + …).
     const checked = Array.from(
       configForm.querySelectorAll<HTMLInputElement>('input[type="radio"]:checked')
     );
-    if (priced && totalEl) {
-      const net = Math.round(Number(priced.dataset.price || 0) * (1 - discountRate));
+    const base = checked.reduce((sum, i) => sum + Number(i.dataset.price || 0), 0);
+    if (totalEl) {
+      const net = Math.round(base * (1 - discountRate));
       totalEl.textContent = fmt(net);
     }
     if (summaryEl) summaryEl.textContent = checked.map((i) => i.value).join(" · ");
@@ -270,9 +272,9 @@ if (configForm) {
   configForm.addEventListener("change", update);
 
   // Discount code: apply on click or Enter; recalculates the total.
-  const discountInput = configForm.querySelector<HTMLInputElement>("[data-discount-input]");
-  const discountApply = configForm.querySelector<HTMLButtonElement>("[data-discount-apply]");
-  const discountMsg = configForm.querySelector<HTMLElement>("[data-discount-msg]");
+  const discountInput = document.querySelector<HTMLInputElement>("[data-discount-input]");
+  const discountApply = document.querySelector<HTMLButtonElement>("[data-discount-apply]");
+  const discountMsg = document.querySelector<HTMLElement>("[data-discount-msg]");
   const applyDiscount = () => {
     const code = (discountInput?.value || "").trim().toUpperCase();
     if (!code) {
