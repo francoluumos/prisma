@@ -859,13 +859,32 @@ sub, small { font-size: 0.72em; }
 .configure__fine { color: var(--slate-soft); font-size: 0.62rem; line-height: 1.4; margin-top: 0.1rem; }
 
 /* Full-width sticky bar: build summary + total + reserve, pinned to the
-   bottom of the viewport while the configurator is in view. */
+   bottom of the viewport. Hidden until the configurator is reached, then
+   revealed (via .is-visible, toggled in main.ts) and sticky thereafter. */
 .configure__bar {
   position: fixed; inset: auto 0 0 0; z-index: var(--z-nav);
   border-top: 1px solid var(--hairline);
   background: color-mix(in oklab, var(--paper) 90%, transparent);
   backdrop-filter: blur(12px) saturate(1.1); -webkit-backdrop-filter: blur(12px) saturate(1.1);
   box-shadow: 0 -10px 34px rgba(0,0,0,0.08);
+  transform: translateY(110%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: transform 0.45s var(--ease-out), opacity 0.45s var(--ease-out),
+              visibility 0s linear 0.45s;
+}
+.configure__bar.is-visible {
+  transform: none;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: transform 0.45s var(--ease-out), opacity 0.45s var(--ease-out),
+              visibility 0s;
+}
+@media (prefers-reduced-motion: reduce) {
+  .configure__bar { transform: none; transition: opacity 0.2s linear, visibility 0s linear 0.2s; }
+  .configure__bar.is-visible { transition: opacity 0.2s linear, visibility 0s; }
 }
 .configure__bar-inner {
   display: flex; align-items: center; gap: clamp(1rem, 3vw, 2.5rem); flex-wrap: wrap;

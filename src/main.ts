@@ -311,6 +311,29 @@ if (configBar) {
   setBarHeight();
   if ("ResizeObserver" in window) new ResizeObserver(setBarHeight).observe(configBar);
   window.addEventListener("resize", setBarHeight);
+
+  // Reveal the bar only once the "Build yours" section is reached, then keep
+  // it shown for everything below (hidden again if you scroll back above it).
+  const configSection = document.querySelector<HTMLElement>("#configure");
+  if (configSection) {
+    const syncBar = () => {
+      // Shown once the section top rises into the lower fifth of the viewport;
+      // top keeps decreasing past it, so it stays shown all the way down.
+      const top = configSection.getBoundingClientRect().top;
+      configBar.classList.toggle("is-visible", top <= window.innerHeight * 0.8);
+    };
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => { syncBar(); ticking = false; });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    syncBar();
+  } else {
+    configBar.classList.add("is-visible");
+  }
 }
 
 /* ----------------------------------------------------------------
