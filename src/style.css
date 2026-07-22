@@ -60,6 +60,8 @@ body {
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   overflow-x: hidden;
+  /* Clear the fixed checkout bar (height measured in JS) so the footer isn't hidden. */
+  padding-bottom: calc(var(--configbar-h, 0px) + 1rem);
 }
 
 img, svg { display: block; max-width: 100%; }
@@ -826,6 +828,11 @@ sub, small { font-size: 0.72em; }
   box-shadow: 0 1px 4px rgba(0,0,0,0.12);
   transition: transform 0.2s var(--ease-out);
 }
+.swatch__chip--pearl {
+  background:
+    radial-gradient(circle at 32% 28%, #ffffff 0%, rgba(255,255,255,0) 42%),
+    conic-gradient(from 210deg, #b7bcc4, #d8dcd6 25%, #c3c8c0 50%, #e6e4dd 72%, #b9bec5 100%);
+}
 .swatch:hover .swatch__chip { transform: translateY(-2px); }
 .swatch input:checked + .swatch__chip { outline: 2px solid var(--ink); outline-offset: 3px; }
 .swatch__body { display: flex; flex-direction: column; gap: 0.1rem; }
@@ -854,15 +861,15 @@ sub, small { font-size: 0.72em; }
 /* Full-width sticky bar: build summary + total + reserve, pinned to the
    bottom of the viewport while the configurator is in view. */
 .configure__bar {
-  grid-column: 1 / -1;
-  position: sticky; bottom: clamp(0.75rem, 2vw, 1.25rem); z-index: 20;
-  margin-top: clamp(1.5rem, 4vw, 2.5rem);
+  position: fixed; inset: auto 0 0 0; z-index: var(--z-nav);
+  border-top: 1px solid var(--hairline);
+  background: color-mix(in oklab, var(--paper) 90%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1); -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  box-shadow: 0 -10px 34px rgba(0,0,0,0.08);
+}
+.configure__bar-inner {
   display: flex; align-items: center; gap: clamp(1rem, 3vw, 2.5rem); flex-wrap: wrap;
-  padding: clamp(0.9rem, 2vw, 1.25rem) clamp(1.1rem, 3vw, 1.9rem);
-  border: 1px solid var(--hairline); border-radius: 18px;
-  background: color-mix(in srgb, var(--paper) 88%, transparent);
-  backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
-  box-shadow: 0 12px 34px rgba(0,0,0,0.10);
+  padding-block: clamp(0.7rem, 1.6vw, 0.95rem);
 }
 .configure__bar-info { display: flex; flex-direction: column; gap: 0.25rem; flex: 1 1 220px; min-width: 0; }
 .configure__discount { display: flex; flex-direction: column; gap: 0.3rem; flex: 0 0 auto; }
@@ -892,7 +899,7 @@ sub, small { font-size: 0.72em; }
 
 @media (max-width: 820px) {
   .configure__panel { grid-template-columns: 1fr; }
-  .configure__bar { gap: 1rem 1.25rem; }
+  .configure__bar-inner { gap: 0.75rem 1.25rem; }
   .configure__bar-info { flex-basis: 100%; order: 3; }
   .configure__bar-total { margin-left: 0; align-items: flex-start; order: 1; }
   .configure__bar .btn--solid { order: 2; margin-left: auto; }

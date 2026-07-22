@@ -379,6 +379,16 @@
               </li>
               <li>
                 <label class="swatch">
+                  <input type="radio" name="colour" value="Chameleon Silver" data-preview="/img/prisma-aero-chameleon-silver-side.webp" data-finish="Pearl" />
+                  <span class="swatch__chip swatch__chip--pearl" style="--swatch:#c9ccc7"></span>
+                  <span class="swatch__body">
+                    <span class="swatch__name">Chameleon Silver</span>
+                    <span class="swatch__finish mono">Pearl</span>
+                  </span>
+                </label>
+              </li>
+              <li>
+                <label class="swatch">
                   <input type="radio" name="colour" value="Bordeaux Red" data-preview="/img/prisma-aero-bordeaux-red-side.webp" data-finish="Metallic" />
                   <span class="swatch__chip" style="--swatch:#623c62"></span>
                   <span class="swatch__body">
@@ -468,22 +478,24 @@
           </div>
 
           <div class="configure__bar">
-            <div class="configure__bar-info">
-              <span class="configure__sub mono" data-summary>Size 51 · Wheeltop EDS-TX · Moon Silver</span>
-              <span class="configure__fine mono">*&nbsp;Includes CHF 400 to our German warehouse &amp; CHF 59 flat-rate delivery within Switzerland.</span>
-            </div>
-            <div class="configure__discount">
-              <div class="configure__discount-row">
-                <input type="text" class="configure__discount-input" name="discount" placeholder="Discount code" aria-label="Discount code" autocomplete="off" data-discount-input />
-                <button type="button" class="configure__discount-apply" data-discount-apply>Apply</button>
+            <div class="configure__bar-inner shell">
+              <div class="configure__bar-info">
+                <span class="configure__sub mono" data-summary>Size 51 · Wheeltop EDS-TX · Moon Silver</span>
+                <span class="configure__fine mono">*&nbsp;Includes CHF 400 to our German warehouse &amp; CHF 59 flat-rate delivery within Switzerland.</span>
               </div>
-              <span class="configure__discount-msg mono" data-discount-msg aria-live="polite"></span>
+              <div class="configure__discount">
+                <div class="configure__discount-row">
+                  <input type="text" class="configure__discount-input" name="discount" placeholder="Discount code" aria-label="Discount code" autocomplete="off" data-discount-input />
+                  <button type="button" class="configure__discount-apply" data-discount-apply>Apply</button>
+                </div>
+                <span class="configure__discount-msg mono" data-discount-msg aria-live="polite"></span>
+              </div>
+              <div class="configure__bar-total">
+                <span class="mono configure__total-label">Your build</span>
+                <span class="configure__price display-sm"><span data-total>CHF 1'414</span><sup class="configure__star">*</sup></span>
+              </div>
+              <a class="btn btn--solid" href="#reserve">Reserve this build</a>
             </div>
-            <div class="configure__bar-total">
-              <span class="mono configure__total-label">Your build</span>
-              <span class="configure__price display-sm"><span data-total>CHF 1'414</span><sup class="configure__star">*</sup></span>
-            </div>
-            <a class="btn btn--solid" href="#reserve">Reserve this build</a>
           </div>
         </form>
 

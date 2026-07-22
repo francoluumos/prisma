@@ -298,6 +298,20 @@ if (configForm) {
 }
 
 /* ----------------------------------------------------------------
+   Fixed checkout bar overlays the page bottom (header-style). Reserve
+   its height as --configbar-h so the footer always clears it, and
+   re-measure whenever the bar wraps or the viewport resizes.
+   ---------------------------------------------------------------- */
+const configBar = document.querySelector<HTMLElement>(".configure__bar");
+if (configBar) {
+  const setBarHeight = () =>
+    document.documentElement.style.setProperty("--configbar-h", configBar.offsetHeight + "px");
+  setBarHeight();
+  if ("ResizeObserver" in window) new ResizeObserver(setBarHeight).observe(configBar);
+  window.addEventListener("resize", setBarHeight);
+}
+
+/* ----------------------------------------------------------------
    Size guide + geometry — open a chart in a native <dialog>.
    Closes on the ✕, on a backdrop click, or Esc (native).
    ---------------------------------------------------------------- */
