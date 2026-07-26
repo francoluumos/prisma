@@ -395,14 +395,6 @@
             <img data-colour-preview src="/img/prisma-aero-moon-silver-side.webp" width="520" height="390" alt="Prisma One in the selected colour" loading="lazy" decoding="async" />
             <figcaption class="configure__preview-cap mono"><span data-colour-label>Moon Silver</span> · <span data-colour-finish>Metallic</span></figcaption>
           </figure>
-          <fieldset class="variant">
-            <legend class="variant__legend mono">Frame size<span class="variant__legend-links"><button type="button" class="size-guide__btn mono" data-size-guide>Size&nbsp;guide</button><button type="button" class="size-guide__btn mono" data-geo-guide>Geometry</button></span></legend>
-            <div class="studio__finish" role="radiogroup" aria-label="Frame size">
-              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 48" /><span>Size 48</span></label>
-              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 51" checked /><span>Size 51</span></label>
-              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 54" /><span>Size 54</span></label>
-            </div>
-          </fieldset>
           </div>
 
           <div class="configure__side">
@@ -452,95 +444,41 @@
           </fieldset>
 
           <fieldset class="variant">
+            <legend class="variant__legend mono">Frame size<span class="variant__legend-links"><button type="button" class="size-guide__btn mono" data-size-guide>Size&nbsp;guide</button><button type="button" class="size-guide__btn mono" data-geo-guide>Geometry</button></span></legend>
+            <div class="studio__finish" role="radiogroup" aria-label="Frame size">
+              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 48" /><span>Size 48</span></label>
+              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 51" checked /><span>Size 51</span></label>
+              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 54" /><span>Size 54</span></label>
+            </div>
+          </fieldset>
+
+          <fieldset class="variant">
             <legend class="variant__legend mono">Shift unit</legend>
-            <ul class="variant__list">
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="drivetrain" value="Wheeltop EDS-TX" data-price="1414" checked />
-                  <span class="variant__body">
-                    <span class="variant__name">Wheeltop EDS-TX</span>
-                    <span class="variant__meta mono">24-speed · mechanical</span>
-                  </span>
-                  <span class="variant__price">CHF 1'414</span>
-                </label>
-              </li>
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="drivetrain" value="Shimano 105" data-price="1435" />
-                  <span class="variant__body">
-                    <span class="variant__name">Shimano 105</span>
-                    <span class="variant__meta mono">24-speed · mechanical</span>
-                  </span>
-                  <span class="variant__price">CHF 1'435</span>
-                </label>
-              </li>
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="drivetrain" value="Shimano 105 Di2" data-price="1865" />
-                  <span class="variant__body">
-                    <span class="variant__name">Shimano 105 Di2</span>
-                    <span class="variant__meta mono">24-speed · electronic</span>
-                  </span>
-                  <span class="variant__price">CHF 1'865</span>
-                </label>
-              </li>
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="drivetrain" value="Shimano Ultegra Di2" data-price="2187" />
-                  <span class="variant__body">
-                    <span class="variant__name">Shimano Ultegra Di2</span>
-                    <span class="variant__meta mono">24-speed · electronic</span>
-                  </span>
-                  <span class="variant__price">CHF 2'187</span>
-                </label>
-              </li>
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="drivetrain" value="Shimano Dura-Ace Di2" data-price="2890" />
-                  <span class="variant__body">
-                    <span class="variant__name">Shimano Dura-Ace Di2</span>
-                    <span class="variant__meta mono">24-speed · electronic</span>
-                  </span>
-                  <span class="variant__price">CHF 2'890</span>
-                </label>
-              </li>
-            </ul>
+            <select class="variant__select" name="drivetrain" data-variant-select aria-label="Shift unit">
+              <option value="Wheeltop EDS-TX" data-price="1414" selected>Wheeltop EDS-TX · 24-speed mechanical — CHF 1'414</option>
+              <option value="Shimano 105" data-price="1435">Shimano 105 · 24-speed mechanical — CHF 1'435</option>
+              <option value="Shimano 105 Di2" data-price="1865">Shimano 105 Di2 · 24-speed electronic — CHF 1'865</option>
+              <option value="Shimano Ultegra Di2" data-price="2187">Shimano Ultegra Di2 · 24-speed electronic — CHF 2'187</option>
+              <option value="Shimano Dura-Ace Di2" data-price="2890">Shimano Dura-Ace Di2 · 24-speed electronic — CHF 2'890</option>
+            </select>
           </fieldset>
 
           <fieldset class="variant">
             <legend class="variant__legend mono">Pedals</legend>
-            <ul class="variant__list">
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="pedals" value="No pedals" data-price="0" checked />
-                  <span class="variant__body">
-                    <span class="variant__name">No pedals</span>
-                    <span class="variant__meta mono">Bring your own</span>
-                  </span>
-                  <span class="variant__price">Included</span>
-                </label>
-              </li>
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="pedals" value="Shimano PD RS 500" data-price="53" />
-                  <span class="variant__body">
-                    <span class="variant__name">Shimano PD RS 500</span>
-                    <span class="variant__meta mono">SPD-SL · road clipless</span>
-                  </span>
-                  <span class="variant__price">+ CHF 53</span>
-                </label>
-              </li>
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="pedals" value="Shimano Ultegra PD R8000" data-price="103" />
-                  <span class="variant__body">
-                    <span class="variant__name">Shimano Ultegra PD R8000</span>
-                    <span class="variant__meta mono">SPD-SL · carbon body</span>
-                  </span>
-                  <span class="variant__price">+ CHF 103</span>
-                </label>
-              </li>
-            </ul>
+            <select class="variant__select" name="pedals" data-variant-select aria-label="Pedals">
+              <option value="No pedals" data-price="0" selected>No pedals · bring your own — included</option>
+              <option value="Shimano PD RS 500" data-price="53">Shimano PD RS 500 · SPD-SL road clipless — +CHF 53</option>
+              <option value="Shimano Ultegra PD R8000" data-price="103">Shimano Ultegra PD R8000 · SPD-SL carbon — +CHF 103</option>
+            </select>
+          </fieldset>
+
+          <fieldset class="variant">
+            <legend class="variant__legend mono">Assembly &amp; delivery</legend>
+            <select class="variant__select" name="assembly" data-variant-select aria-label="Assembly and delivery">
+              <option value="Complete build at home" data-price="0" selected>Complete build at home — included</option>
+              <option value="Half-built, home delivery" data-price="59">Half-built, home delivery — +CHF 59</option>
+              <option value="Pick-up at local partner" data-price="149">Pick-up at local partner — +CHF 149</option>
+            </select>
           </fieldset>
           </div>
 

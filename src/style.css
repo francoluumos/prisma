@@ -864,6 +864,17 @@ sub, small { font-size: 0.72em; }
 .configure__canvas { display: block; width: 100%; height: auto; }
 .configure__preview-cap { color: var(--slate); margin-top: 0.9rem; text-align: center; }
 
+/* Variant dropdown (Beta): shift unit / pedals / assembly. */
+.variant__select {
+  width: 100%; font: inherit; font-size: 0.9rem; color: var(--ink);
+  padding: 0.72rem 2.4rem 0.72rem 0.85rem;
+  border: 1px solid var(--hairline-ink); border-radius: 10px; background-color: var(--paper);
+  appearance: none; -webkit-appearance: none; cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23555' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 0.9rem center; background-size: 12px;
+}
+.variant__select:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+
 /* ── Colour studio (Beta) ─────────────────────────────────────── */
 .studio { display: flex; flex-direction: column; gap: 1.4rem; }
 .studio .footer__tag { margin-left: 0.5rem; }

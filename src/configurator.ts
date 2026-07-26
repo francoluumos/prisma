@@ -32,16 +32,32 @@ export function initConfigurator(): void {
   let discountRate = 0;
 
   const update = () => {
-    // Total = the sum of every checked priced radio (drivetrain + pedals + …).
+    // Every choice contributes a value (for the summary) and a price (for the
+    // total): checked radios, plus any <select data-variant-select> whose
+    // chosen <option> carries a data-price (the Beta page uses dropdowns).
     const checked = Array.from(
       configForm.querySelectorAll<HTMLInputElement>('input[type="radio"]:checked')
     );
-    const base = checked.reduce((sum, i) => sum + Number(i.dataset.price || 0), 0);
+    const selects = Array.from(
+      configForm.querySelectorAll<HTMLSelectElement>("select[data-variant-select]")
+    );
+    const items = [
+      // Finish is a colour-studio attribute shown in the preview caption, not a
+      // checkout line item — keep it out of the build summary.
+      ...checked
+        .filter((i) => i.name !== "finish")
+        .map((i) => ({ value: i.value, price: Number(i.dataset.price || 0) })),
+      ...selects.map((s) => {
+        const opt = s.selectedOptions[0];
+        return { value: opt ? opt.value : s.value, price: Number(opt?.dataset.price || 0) };
+      }),
+    ];
+    const base = items.reduce((sum, i) => sum + i.price, 0);
     if (totalEl) {
       const net = Math.round(base * (1 - discountRate));
       totalEl.textContent = fmt(net);
     }
-    if (summaryEl) summaryEl.textContent = checked.map((i) => i.value).join(" · ");
+    if (summaryEl) summaryEl.textContent = items.map((i) => i.value).join(" · ");
 
     // Swap the left-column preview to the chosen colour.
     const colour = configForm.querySelector<HTMLInputElement>('input[name="colour"]:checked');
