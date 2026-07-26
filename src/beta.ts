@@ -2,6 +2,7 @@ import "./style.css";
 import { initSite } from "./site";
 import { initConfigurator, initConfigBar, initModals } from "./configurator";
 import { initStudio } from "./paint/studio";
+import { initLoupe } from "./paint/loupe";
 import { initAssistant } from "./assistant/ui";
 
 /* ----------------------------------------------------------------
@@ -23,6 +24,9 @@ initModals();
 /* Stage 2 — the canvas paint engine (frame + wheel recolour). Progressive:
    no-ops back to the curated image swap if unsupported or assets fail. */
 void initStudio();
+
+/* Hover magnifier over the preview (desktop pointers only). */
+initLoupe();
 
 /* Stage 4 — the Gemini fit/inspiration assistant + voice input. Degrades to an
    inert panel with a note if the backend env isn't configured. */

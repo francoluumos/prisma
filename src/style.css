@@ -856,12 +856,29 @@ sub, small { font-size: 0.72em; }
 /* Selected-colour preview at the top of the left column. */
 .configure__lead { min-width: 0; }
 .configure__preview {
+  position: relative;
   margin: 0 0 clamp(1.5rem, 4vw, 2.5rem);
   border: 1px solid var(--hairline); border-radius: 16px;
   background: var(--paper-sunk); padding: clamp(1rem, 3vw, 2rem);
 }
 .configure__preview img { display: block; width: 100%; height: auto; }
 .configure__canvas { display: block; width: 100%; height: auto; }
+
+/* Hover magnifier (Beta studio, desktop pointers only). */
+@media (hover: hover) and (pointer: fine) {
+  .configure__preview:has([data-paint-canvas]) .configure__canvas,
+  .configure__preview:has([data-paint-canvas]) [data-colour-preview] { cursor: zoom-in; }
+}
+.loupe {
+  position: absolute; inline-size: 176px; block-size: 176px;
+  margin: -88px 0 0 -88px; border-radius: 50%; overflow: hidden;
+  pointer-events: none; z-index: 5; background: var(--paper-sunk);
+  border: 1px solid var(--hairline-ink); box-shadow: 0 8px 28px rgba(0,0,0,0.20);
+  opacity: 0; transition: opacity 0.14s var(--ease-out);
+}
+.loupe.is-visible { opacity: 1; }
+.loupe__canvas { display: block; inline-size: 100%; block-size: 100%; }
+@media (prefers-reduced-motion: reduce) { .loupe { transition: none; } }
 .configure__preview-cap { color: var(--slate); margin-top: 0.9rem; text-align: center; }
 
 /* Variant dropdown (Beta): shift unit / pedals / assembly. */
