@@ -11,11 +11,12 @@ const ZOOM = 2.5;
 
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
+// On touch the loupe is lifted above the fingertip so it isn't hidden by it.
+const TOUCH_OFFSET = 96;
+
 export function initLoupe(): void {
   const fig = document.querySelector<HTMLElement>(".configure__preview");
   if (!fig) return;
-  // Desktop hover only — a loupe makes no sense under a fingertip.
-  if (!window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
 
   const canvas = fig.querySelector<HTMLCanvasElement>("[data-paint-canvas]");
   const img = fig.querySelector<HTMLImageElement>("[data-colour-preview]");
@@ -43,6 +44,7 @@ export function initLoupe(): void {
   let raf = 0;
   let lastX = 0;
   let lastY = 0;
+  let touchMode = false;
 
   const draw = () => {
     raf = 0;
@@ -62,6 +64,7 @@ export function initLoupe(): void {
     const region = SIZE / ZOOM; // displayed px shown through the lens
     const rw = region * scaleX;
     const rh = region * scaleY;
+    // Sample centred on the pointer (the finger, on touch).
     const sx = clamp(x * scaleX - rw / 2, 0, Math.max(0, sw - rw));
     const sy = clamp(y * scaleY - rh / 2, 0, Math.max(0, sh - rh));
 
@@ -70,17 +73,54 @@ export function initLoupe(): void {
     ctx.fillRect(0, 0, lc.width, lc.height);
     ctx.drawImage(src, sx, sy, rw, rh, 0, 0, lc.width, lc.height);
 
+    // Display centred on the pointer; lifted above the finger on touch.
     const figRect = fig.getBoundingClientRect();
     loupe.style.left = lastX - figRect.left + "px";
-    loupe.style.top = lastY - figRect.top + "px";
+    loupe.style.top = lastY - figRect.top - (touchMode ? TOUCH_OFFSET : 0) + "px";
     loupe.classList.add("is-visible");
   };
 
-  fig.addEventListener("pointermove", (e) => {
-    if (e.pointerType === "touch") return;
-    lastX = e.clientX;
-    lastY = e.clientY;
+  const queue = (clientX: number, clientY: number, touch: boolean) => {
+    lastX = clientX;
+    lastY = clientY;
+    touchMode = touch;
     if (!raf) raf = requestAnimationFrame(draw);
+  };
+  const hide = () => loupe.classList.remove("is-visible");
+  let pressed = false; // a touch/pen is held down over the image
+
+  // Desktop: follow the mouse on hover.
+  fig.addEventListener("pointermove", (e) => {
+    if (e.pointerType === "mouse") queue(e.clientX, e.clientY, false);
+    else if (pressed) {
+      e.preventDefault(); // touch-drag drives the lens instead of scrolling
+      queue(e.clientX, e.clientY, true);
+    }
   });
-  fig.addEventListener("pointerleave", () => loupe.classList.remove("is-visible"));
+  fig.addEventListener("pointerleave", (e) => {
+    if (e.pointerType === "mouse") hide();
+  });
+
+  // Touch/pen: press-and-drag over the image to zoom.
+  fig.addEventListener("pointerdown", (e) => {
+    if (e.pointerType === "mouse") return;
+    const src = activeSource();
+    if (!src) return;
+    const r = src.getBoundingClientRect();
+    if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+    pressed = true;
+    try {
+      fig.setPointerCapture(e.pointerId);
+    } catch {
+      /* ignore */
+    }
+    queue(e.clientX, e.clientY, true);
+  });
+  const release = (e: PointerEvent) => {
+    if (e.pointerType === "mouse") return;
+    pressed = false;
+    hide();
+  };
+  fig.addEventListener("pointerup", release);
+  fig.addEventListener("pointercancel", release);
 }

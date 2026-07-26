@@ -7,11 +7,16 @@
    lacks a given element is a harmless no-op.
    ---------------------------------------------------------------- */
 
+import { initCookieConsent } from "./cookie";
+
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
 
 export function initSite(): void {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* Cookie consent banner (shown until the visitor chooses). */
+  initCookieConsent();
 
   /* Nav: hairline + denser glass once scrolled */
   const nav = document.querySelector<HTMLElement>("[data-nav]");

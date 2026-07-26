@@ -723,6 +723,54 @@ sub, small { font-size: 0.72em; }
   border: 1px solid var(--hairline-ink);
 }
 .footer__links a[href="/beta.html"]:hover .footer__tag { border-color: var(--c-violet); color: var(--c-violet); }
+/* Legal links: a full-width muted row under the main footer links. */
+.footer__legal { flex-basis: 100%; display: flex; flex-wrap: wrap; gap: 0.75rem 1.5rem; padding-top: 1.25rem; border-top: 1px solid var(--hairline); }
+.footer__legal a { font-size: 0.72rem; color: var(--slate); transition: color 0.3s var(--ease-out); }
+.footer__legal a:hover, .footer__legal a[aria-current="page"] { color: var(--ink); }
+
+/* ============================================================
+   Legal pages (terms / cookies / impressum)
+   ============================================================ */
+.legal { max-width: 780px; margin: 0 auto; padding-block: clamp(4.5rem, 11vw, 8rem) clamp(3rem, 8vw, 6rem); }
+.legal__title { margin: 0.4rem 0 0.5rem; }
+.legal__meta { color: var(--slate-soft); font-size: 0.72rem; }
+.legal__notice {
+  margin-top: 1.4rem; padding: 0.85rem 1rem; border: 1px solid var(--hairline-ink);
+  border-left: 2px solid var(--c-orange); border-radius: 8px;
+  color: var(--slate); font-size: 0.72rem; line-height: 1.55;
+}
+.legal__body { margin-top: 2.5rem; }
+.legal__body h2 { font-family: var(--font-display); font-weight: 600; font-size: 1.15rem; color: var(--ink); margin: 2.2rem 0 0.6rem; }
+.legal__body h3 { font-family: var(--font-display); font-weight: 500; font-size: 0.95rem; color: var(--ink); margin: 1.3rem 0 0.4rem; }
+.legal__body p { color: var(--ink-body); line-height: 1.7; margin: 0 0 0.9rem; font-size: 0.95rem; }
+.legal__body a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+.legal__foot { margin-top: 2.75rem; color: var(--slate-soft); font-size: 0.72rem; }
+
+/* ============================================================
+   Cookie consent banner (injected by src/cookie.ts)
+   ============================================================ */
+.cookie {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 200;
+  background: color-mix(in oklab, var(--paper) 94%, transparent);
+  backdrop-filter: blur(12px) saturate(1.1); -webkit-backdrop-filter: blur(12px) saturate(1.1);
+  border-top: 1px solid var(--hairline); box-shadow: 0 -8px 30px rgba(0,0,0,0.09);
+  transform: translateY(100%); transition: transform 0.4s var(--ease-out);
+}
+.cookie.is-visible { transform: none; }
+.cookie__inner { display: flex; align-items: center; gap: 1rem 2rem; flex-wrap: wrap; padding-block: 1rem; }
+.cookie__text { color: var(--ink-body); font-size: 0.82rem; line-height: 1.5; flex: 1 1 300px; min-width: 0; }
+.cookie__text a { color: var(--ink); text-decoration: underline; text-underline-offset: 2px; }
+.cookie__actions { display: flex; gap: 0.6rem; flex: 0 0 auto; }
+.cookie__btn {
+  font: inherit; font-size: 0.8rem; font-weight: 500; padding: 0.6em 1.1em; border-radius: 9px;
+  cursor: pointer; white-space: nowrap; transition: opacity 0.2s var(--ease-out), border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+.cookie__btn--solid { color: var(--paper); background: var(--ink); border: 1px solid var(--ink); }
+.cookie__btn--solid:hover { opacity: 0.88; }
+.cookie__btn--ghost { color: var(--ink-body); background: none; border: 1px solid var(--hairline-ink); }
+.cookie__btn--ghost:hover { border-color: var(--ink); color: var(--ink); }
+.cookie__btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .cookie { transition: none; } }
 
 /* ============================================================
    Reveal animations
@@ -864,11 +912,14 @@ sub, small { font-size: 0.72em; }
 .configure__preview img { display: block; width: 100%; height: auto; }
 .configure__canvas { display: block; width: 100%; height: auto; }
 
-/* Hover magnifier (Beta studio, desktop pointers only). */
+/* Magnifier (Beta studio): zoom-in cursor on desktop; on touch, hold-and-drag
+   over the image drives the lens instead of scrolling. */
 @media (hover: hover) and (pointer: fine) {
   .configure__preview:has([data-paint-canvas]) .configure__canvas,
   .configure__preview:has([data-paint-canvas]) [data-colour-preview] { cursor: zoom-in; }
 }
+.configure__preview:has([data-paint-canvas]) .configure__canvas,
+.configure__preview:has([data-paint-canvas]) [data-colour-preview] { touch-action: none; }
 .loupe {
   position: absolute; inline-size: 176px; block-size: 176px;
   margin: -88px 0 0 -88px; border-radius: 50%; overflow: hidden;
