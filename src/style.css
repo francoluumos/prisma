@@ -914,6 +914,10 @@ sub, small { font-size: 0.72em; }
 }
 .configure__preview img { display: block; width: 100%; height: auto; }
 .configure__canvas { display: block; width: 100%; height: auto; }
+/* Beta studio: drop the card frame so the bike sits on the white studio surface. */
+.configure__preview:has([data-paint-canvas]) {
+  border-color: transparent; background: transparent; padding-inline: 0;
+}
 
 /* Magnifier (Beta studio): zoom-in cursor on desktop; on touch, hold-and-drag
    over the image drives the lens instead of scrolling. */
