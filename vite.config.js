@@ -4,13 +4,14 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL(".", import.meta.url));
 
-// Multi-page build: emit both the Aero (index) and Gravel pages.
+// Multi-page build: emit the Aero (index), Gravel, and Beta studio pages.
 export default defineConfig({
   build: {
     rollupOptions: {
       input: {
         main: resolve(root, "index.html"),
         gravel: resolve(root, "gravel.html"),
+        beta: resolve(root, "beta.html"),
       },
     },
   },

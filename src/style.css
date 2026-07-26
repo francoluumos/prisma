@@ -710,6 +710,19 @@ sub, small { font-size: 0.72em; }
   transition: color 0.3s var(--ease-out);
 }
 .footer__links a:hover { color: var(--ink); }
+/* Beta menu point: label + a small spectrum-accented tag. */
+.footer__links a[href="/beta.html"] { display: inline-flex; align-items: center; gap: 0.4em; }
+.footer__tag {
+  font-size: 0.62rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.22em 0.42em;
+  border-radius: 999px;
+  color: var(--ink-body);
+  border: 1px solid var(--hairline-ink);
+}
+.footer__links a[href="/beta.html"]:hover .footer__tag { border-color: var(--c-violet); color: var(--c-violet); }
 
 /* ============================================================
    Reveal animations

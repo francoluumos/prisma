@@ -3,18 +3,19 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <title>Prisma One — Aero, distilled.</title>
+    <title>Prisma One — Studio (Beta)</title>
     <meta
       name="description"
-      content="Prisma One is a single-piece carbon aero road bike, shaped in the wind tunnel and built around one idea: nothing between you and the road. First edition, numbered."
+      content="Prisma Studio, in beta: an interactive configurator for the Prisma One. Get an AI fit recommendation from your measurements, then paint the frame and wheels in any colour."
     />
     <meta name="theme-color" content="#ffffff" />
+    <meta name="robots" content="noindex" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 
-    <meta property="og:title" content="Prisma One — Aero, distilled." />
+    <meta property="og:title" content="Prisma One — Studio (Beta)" />
     <meta
       property="og:description"
-      content="A single-piece carbon aero road bike. Nothing between you and the road."
+      content="An interactive configurator for the Prisma One — AI fit guidance and a colour studio for frame and wheels."
     />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/img/prisma-one-profile.webp" />
@@ -655,13 +656,13 @@
       </div>
       <p class="footer__line mono">Made to move · © 2026</p>
       <nav class="footer__links" aria-label="Footer">
-        <a href="#frame">Frame</a>
-        <a href="#spec">Spec</a>
+        <a href="/index.html#frame">Frame</a>
+        <a href="/index.html#spec">Spec</a>
         <a href="#reserve">Reserve</a>
-        <a href="/beta.html">Studio<span class="footer__tag mono">Beta</span></a>
+        <a href="/beta.html" aria-current="page">Studio<span class="footer__tag mono">Beta</span></a>
       </nav>
     </footer>
 
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/beta.ts"></script>
   </body>
 </html>
