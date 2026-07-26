@@ -20,6 +20,9 @@ export const AERO_PAINT: PaintableProduct = {
       base: `${AERO_SIDE_DIR}/base.png`,
       width: 1196,
       height: 896,
+      // Wheels region intentionally omitted: the real per-part wheel masks will
+      // be supplied later. Until then the wheels come straight from `base` and
+      // are not recoloured (the wheel colour picker stays but has no effect).
       regions: {
         frame: {
           id: "frame",
@@ -27,13 +30,6 @@ export const AERO_PAINT: PaintableProduct = {
           shade: `${AERO_SIDE_DIR}/frame.shade.png`,
           spec: `${AERO_SIDE_DIR}/frame.spec.png`,
           defaultHex: "#a3b0bb", // Moon Silver
-        },
-        wheels: {
-          id: "wheels",
-          label: "Wheels",
-          shade: `${AERO_SIDE_DIR}/wheels.shade.png`,
-          spec: `${AERO_SIDE_DIR}/wheels.spec.png`,
-          defaultHex: "#1b1b1b", // deep-section black
         },
       },
     },

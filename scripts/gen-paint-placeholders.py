@@ -72,41 +72,11 @@ for y in range(H):
 frame_shade.save(f"{OUT}/frame.shade.png")
 frame_spec.save(f"{OUT}/frame.spec.png")
 
-# ---- Wheels: synthetic deep-section disc so a colour actually reads on it ----
-wheel_shade = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-wheel_spec = Image.new("RGBA", (W, H), (0, 0, 0, 0))
-ws = wheel_shade.load()
-wsp = wheel_spec.load()
-for center in (REAR, FRONT):
-    cx, cy = center
-    for y in range(cy - R - 2, cy + R + 2):
-        if y < 0 or y >= H:
-            continue
-        for x in range(cx - R - 2, cx + R + 2):
-            if x < 0 or x >= W:
-                continue
-            d = math.hypot(x - cx, y - cy)
-            if d > R:
-                continue
-            if d >= R_TYRE_IN:
-                v = 26           # tyre stays dark (recolour barely shows)
-            elif d >= R_RIM_IN:
-                # deep rim body: bright, slight radial falloff + top lighting
-                toplit = 1.0 - (y - cy) / (2.2 * R)   # brighter up top
-                v = clamp(150 + 55 * toplit)
-            else:
-                # spokes / hub: mid, faint spoke ticks from angle
-                ang = math.atan2(y - cy, x - cx)
-                spoke = 30 if (int(ang * 16 / math.pi) % 2 == 0 and d > 40) else 0
-                v = clamp(120 - 40 * (1 - d / R_RIM_IN) + spoke)
-            ws[x, y] = (v, v, v, 255)
-            # a bright specular arc across the upper rim
-            if R_RIM_IN <= d < R_TYRE_IN and (y - cy) < -0.25 * R and (x - cx) > 0.1 * R:
-                wsp[x, y] = (255, 255, 255, 150)
-wheel_shade.save(f"{OUT}/wheels.shade.png")
-wheel_spec.save(f"{OUT}/wheels.spec.png")
+# ---- Base: the real bike render. Only the frame region is recoloured on top;
+#      the wheels (and everything else) show through from this layer untouched.
+#      The wheels region is intentionally NOT generated as a placeholder — real
+#      wheel masks will be supplied later (drop wheels.shade/spec + re-add the
+#      region in src/paint/products.paint.ts). ----
+src.save(f"{OUT}/base.png")
 
-# ---- Base: nothing baked for the placeholder (all visible bike is paintable) ----
-Image.new("RGBA", (W, H), (0, 0, 0, 0)).save(f"{OUT}/base.png")
-
-print(f"Wrote placeholder paint layers to {OUT}/ ({W}x{H})")
+print(f"Wrote placeholder paint layers to {OUT}/ (base + frame only, {W}x{H})")

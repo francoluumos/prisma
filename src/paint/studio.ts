@@ -41,8 +41,9 @@ export async function initStudio(): Promise<void> {
 
   const aero = PRODUCTS.aero;
   const state: PaintState = {
-    frame: { kind: "solid", hex: AERO_PAINT.angles.side!.regions.frame.defaultHex },
-    wheels: { kind: "solid", hex: AERO_PAINT.angles.side!.regions.wheels.defaultHex },
+    frame: { kind: "solid", hex: AERO_PAINT.angles.side!.regions.frame!.defaultHex },
+    // Wheels aren't recoloured yet (no masks); the picker still tracks a colour.
+    wheels: { kind: "solid", hex: "#1b1b1b" },
     finish: "metallic",
   };
 

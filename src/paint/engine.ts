@@ -81,6 +81,7 @@ export class PaintEngine {
     const paths = new Set<string>([this.layers.base]);
     if (this.layers.overlay) paths.add(this.layers.overlay);
     for (const r of Object.values(this.layers.regions)) {
+      if (!r) continue;
       paths.add(r.shade);
       paths.add(r.spec);
       if (r.mask) paths.add(r.mask);
@@ -174,8 +175,10 @@ export class PaintEngine {
     g.clearRect(0, 0, w, h);
     const base = this.assets.get(this.layers.base);
     if (base) g.drawImage(base as unknown as CanvasImageSource, 0, 0, w, h);
-    g.drawImage(this.renderRegion(this.layers.regions.wheels, state.wheels, state.finish) as CanvasImageSource, 0, 0, w, h);
-    g.drawImage(this.renderRegion(this.layers.regions.frame, state.frame, state.finish) as CanvasImageSource, 0, 0, w, h);
+    const wheels = this.layers.regions.wheels;
+    if (wheels) g.drawImage(this.renderRegion(wheels, state.wheels, state.finish) as CanvasImageSource, 0, 0, w, h);
+    const frame = this.layers.regions.frame;
+    if (frame) g.drawImage(this.renderRegion(frame, state.frame, state.finish) as CanvasImageSource, 0, 0, w, h);
     const overlay = this.layers.overlay ? this.assets.get(this.layers.overlay) : undefined;
     if (overlay) g.drawImage(overlay as unknown as CanvasImageSource, 0, 0, w, h);
   }

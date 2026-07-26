@@ -38,7 +38,8 @@ export interface PaintLayerSet {
   /** Intrinsic pixel size of the passes. */
   width: number;
   height: number;
-  regions: Record<RegionId, PaintRegion>;
+  /** Present regions. Wheels are omitted until real wheel masks are supplied. */
+  regions: Partial<Record<RegionId, PaintRegion>>;
 }
 
 export interface PaintableProduct {
