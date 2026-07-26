@@ -1,0 +1,7 @@
+# Supabase local config. Link your project with:  supabase link --project-ref <ref>
+project_id = "prisma"
+
+# The assistant does its own gating (origin allowlist + anon-key header + Deno KV
+# rate limiting), so it does not require a verified JWT.
+[functions.assistant]
+verify_jwt = false
