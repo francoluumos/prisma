@@ -953,6 +953,7 @@ sub, small { font-size: 0.72em; }
 .assistant__mic:hover { color: var(--ink); border-color: var(--ink); }
 .assistant__mic.is-live { color: var(--c-red); border-color: var(--c-red); animation: micpulse 1.2s ease-in-out infinite; }
 @keyframes micpulse { 50% { opacity: 0.55; } }
+@media (prefers-reduced-motion: reduce) { .assistant__mic.is-live { animation: none; } }
 .assistant__send {
   flex: none; font: inherit; font-size: 0.82rem; font-weight: 500; cursor: pointer;
   color: var(--paper); background: var(--ink); border: 0; border-radius: 9px; padding: 0.55em 1.1em;

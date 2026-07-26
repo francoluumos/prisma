@@ -6,8 +6,10 @@
   "description": "Prisma — launch site for a precision optical-glass prism.",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/catalog-check.mjs",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "verify": "node scripts/catalog-check.mjs && node scripts/sync-shared-products.mjs && tsc --noEmit"
   },
   "devDependencies": {
     "puppeteer-core": "^23.11.1",

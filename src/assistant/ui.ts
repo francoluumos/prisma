@@ -197,6 +197,12 @@ function wireInspiration(root: HTMLElement): void {
   };
 
   drop.addEventListener("click", () => filesInput.click());
+  drop.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      filesInput.click();
+    }
+  });
   filesInput.addEventListener("change", () => addFiles(filesInput.files));
   ["dragover", "dragenter"].forEach((ev) =>
     drop.addEventListener(ev, (e) => {

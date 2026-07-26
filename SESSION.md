@@ -171,3 +171,40 @@ edition of 500) are plausible placeholders. Replace with real numbers in
 `impeccable`, `emilkowalski/skill` (emil-design-eng, review-animations),
 `Leonxlnx/taste-skill` (13 skills incl. gpt-taste, high-end-visual-design),
 `vercel-labs find-skills`. PRODUCT.md + DESIGN.md were generated via `/impeccable init`.
+
+## Beta "Studio" page (2026-07-26) — AI configurator + colour studio
+
+New footer-only page `beta.html` (Vite entry #3, `src/beta.ts`). Reuses the live
+site's behaviour via extracted shared modules — `src/site.ts` (nav/reveals/tilt/
+reserve/parallax) and `src/configurator.ts` (build panel/checkout bar/dialogs);
+`index.html`/`gravel.html` are unchanged.
+
+- **Shared catalog**: `src/data/products.ts` (Aero + Terra colours/sizes/geometry/
+  drivetrains/pedals/fees). `scripts/catalog-check.mjs` guards it against the HTML
+  (runs on `prebuild`). Consumed by the studio, paint registry, and edge function
+  (build-synced via `scripts/sync-shared-products.mjs`).
+- **Colour studio** (`src/paint/*`): 2D canvas engine recolours frame + wheels
+  independently with any colour or an uploaded pattern, preserving 3D shading —
+  `(colour × AO-shade) screened-with spec` per region. Falls back to the curated
+  image swap if unsupported. **Assets under `public/img/paint/aero/side/` are
+  PLACEHOLDERS** from `scripts/gen-paint-placeholders.py` (frame = whole silhouette
+  minus wheel discs; synthetic wheels). **Replace with the real 3D export**: per
+  region a `*.shade` (RGB=AO, A=mask) + `*.spec` pass, plus a neutral `base`,
+  pixel-registered, straight-alpha sRGB — see the paint asset spec in the plan.
+- **Gemini assistant** (`supabase/functions/assistant/` + `src/assistant/*`): fit
+  chat (streaming, forced `recommendBuild` tool call enum-constrained to catalog) +
+  vision palette from inspiration images; voice via Web Speech API. Frontend
+  degrades to an inert panel until `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` set.
+
+## Beta — open items / next steps
+
+- [ ] **Replace placeholder paint assets** with the real per-part 3D export
+      (frame vs wheels vs base, AO + spec passes). Then extend to more angles
+      (`public/img/paint/aero/<angle>/`) and to Terra.
+- [ ] **Deploy the edge function**: `supabase secrets set GEMINI_API_KEY=…` then
+      `supabase functions deploy assistant`; set the two `VITE_SUPABASE_*` envs in
+      Vercel + `.env.local` (see `supabase/functions/assistant/README.md`).
+- [ ] Pinterest/Instagram links are captured as a text note only (their sites
+      can't be scraped from the browser); palette comes from uploaded images.
+- [ ] Confirm real Aero sizing/geometry (still flagged invented above) before the
+      assistant reasons over it in production.
