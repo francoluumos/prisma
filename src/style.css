@@ -273,9 +273,12 @@ sub, small { font-size: 0.72em; }
 
 @media (max-width: 720px) {
   .nav__links { display: none; }
-  /* Keep the model switch reachable on phones; just trim it down. */
-  .nav__models { margin-left: 0.75rem; }
-  .nav__model { padding: 0.3rem 0.7rem; font-size: 0.72rem; }
+  /* Compress so wordmark + model switch + CTA fit the phone without clipping. */
+  .nav__inner { gap: 0.45rem; }
+  .nav__models { margin-left: 0; }
+  .nav__model { padding: 0.3rem 0.55rem; font-size: 0.7rem; }
+  .nav__cta { padding: 0.48em 0.8em; font-size: 0.84rem; }
+  .wordmark__text { font-size: 0.9rem; letter-spacing: 0.09em; }
 }
 
 /* ============================================================
