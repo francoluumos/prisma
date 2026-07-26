@@ -153,6 +153,23 @@ export async function initStudio(): Promise<void> {
     setFrameSolid(colour.hex, colour.name);
   });
 
+  // Apply a colourway pushed by the assistant (inspiration palette).
+  document.addEventListener("prisma:paint", (e) => {
+    const d = (e as CustomEvent).detail as {
+      frameHex?: string;
+      wheelsHex?: string;
+      finish?: PaintState["finish"];
+      label?: string;
+    };
+    if (d.finish) {
+      state.finish = d.finish;
+      finishInputs.forEach((r) => (r.checked = r.value === d.finish));
+    }
+    if (d.wheelsHex) setWheelSolid(d.wheelsHex);
+    if (d.frameHex) setFrameSolid(d.frameHex, d.label || "Custom");
+    else repaint();
+  });
+
   // Recompose on resize (engine rebuilds only if the pixel size changed).
   let rz = 0;
   window.addEventListener("resize", () => {

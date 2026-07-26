@@ -317,6 +317,70 @@
         </dl>
       </section>
 
+      <!-- ───────────────────── Studio assistant (Beta) ───────────────────── -->
+      <section class="assistant shell" id="assistant" aria-labelledby="assistant-title" data-assistant>
+        <header class="section-head" data-reveal>
+          <h2 class="section-head__title display-sm" id="assistant-title">Find your fit.</h2>
+          <p class="configure__note mono">Share your measurements for a size &amp; build recommendation — or drop in inspiration to colour the bike.</p>
+        </header>
+
+        <div class="assistant__grid" data-reveal>
+          <!-- Fit chat -->
+          <div class="assistant__card">
+            <span class="assistant__card-label mono">Fit assistant</span>
+            <div class="assistant__rider">
+              <label class="assistant__field mono">Height (cm)
+                <input type="number" data-rider-height inputmode="numeric" min="120" max="220" placeholder="176" />
+              </label>
+              <label class="assistant__field mono">Inseam (cm)
+                <input type="number" data-rider-inseam inputmode="numeric" min="50" max="110" placeholder="81" />
+              </label>
+              <label class="assistant__field mono">Level
+                <select data-rider-level>
+                  <option value="">—</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                  <option value="racer">Racer</option>
+                </select>
+              </label>
+              <label class="assistant__field mono">Style
+                <select data-rider-style>
+                  <option value="">—</option>
+                  <option value="endurance">Endurance</option>
+                  <option value="all-round">All-round</option>
+                  <option value="aggressive">Aggressive</option>
+                  <option value="racing">Racing</option>
+                </select>
+              </label>
+            </div>
+            <div class="assistant__log" data-chat-log role="log" aria-live="polite" aria-label="Fit assistant conversation"></div>
+            <div class="assistant__rec" data-rec hidden></div>
+            <form class="assistant__input" data-chat-form>
+              <button type="button" class="assistant__mic" data-mic hidden aria-label="Speak your message" title="Voice input">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" aria-hidden="true"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3Z" stroke="currentColor" stroke-width="1.5"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              </button>
+              <input type="text" class="assistant__text" data-chat-input placeholder="e.g. aggressive but comfortable" aria-label="Message the fit assistant" autocomplete="off" />
+              <button type="submit" class="assistant__send">Ask</button>
+            </form>
+            <p class="assistant__hint mono" data-assistant-hint></p>
+          </div>
+
+          <!-- Inspiration -->
+          <div class="assistant__card">
+            <span class="assistant__card-label mono">Inspiration → colourway</span>
+            <div class="assistant__drop" data-drop tabindex="0" role="button" aria-label="Upload inspiration images">
+              <input type="file" accept="image/*" multiple data-inspo-files hidden />
+              <p class="mono">Drop inspiration images<br /><span>or click to upload (up to 3)</span></p>
+              <ul class="assistant__thumbs" data-inspo-thumbs></ul>
+            </div>
+            <input type="text" class="assistant__text assistant__note-input" data-inspo-note placeholder="Optional: a Pinterest / Instagram link, or a vibe" aria-label="Inspiration note" autocomplete="off" />
+            <button type="button" class="assistant__send" data-inspo-go>Extract colourway</button>
+            <div class="assistant__palette" data-palette hidden></div>
+          </div>
+        </div>
+      </section>
+
       <!-- ───────────────────── Configure / variants ───────────────────── -->
       <section class="configure shell" id="configure" aria-labelledby="configure-title">
         <header class="section-head" data-reveal>
