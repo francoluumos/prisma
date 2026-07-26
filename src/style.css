@@ -861,7 +861,50 @@ sub, small { font-size: 0.72em; }
   background: var(--paper-sunk); padding: clamp(1rem, 3vw, 2rem);
 }
 .configure__preview img { display: block; width: 100%; height: auto; }
+.configure__canvas { display: block; width: 100%; height: auto; }
 .configure__preview-cap { color: var(--slate); margin-top: 0.9rem; text-align: center; }
+
+/* ── Colour studio (Beta) ─────────────────────────────────────── */
+.studio { display: flex; flex-direction: column; gap: 1.4rem; }
+.studio .footer__tag { margin-left: 0.5rem; }
+.studio__region { display: flex; flex-direction: column; gap: 0.7rem; }
+.studio__region-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.studio__region-label { color: var(--slate); letter-spacing: 0.04em; }
+.studio__pick { display: inline-flex; align-items: center; gap: 0.5rem; cursor: pointer; }
+.studio__pick input[type="color"] {
+  inline-size: 30px; block-size: 30px; padding: 0; cursor: pointer;
+  border: 1px solid var(--hairline-ink); border-radius: 8px; background: none;
+}
+.studio__pick input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+.studio__pick input[type="color"]::-webkit-color-swatch { border: 0; border-radius: 5px; }
+.studio__pick-hex { color: var(--slate-soft); font-size: 0.68rem; min-width: 6ch; }
+.studio__chips { list-style: none; display: flex; flex-wrap: wrap; gap: 0.5rem; padding: 0; margin: 0; }
+.studio__chip {
+  inline-size: 26px; block-size: 26px; border-radius: 50%; padding: 0;
+  background: var(--swatch); border: 1px solid var(--hairline-ink); cursor: pointer;
+  transition: transform 0.18s var(--ease-out);
+}
+.studio__chip:hover { transform: translateY(-2px); }
+.studio__chip:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.studio__pattern { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; }
+.studio__file { cursor: pointer; }
+.studio__file span, .studio__clear {
+  display: inline-block; font-size: 0.7rem; color: var(--ink-body);
+  border: 1px solid var(--hairline-ink); border-radius: 999px; padding: 0.35em 0.85em;
+  background: none; cursor: pointer; transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+.studio__file:hover span, .studio__clear:hover { border-color: var(--ink); color: var(--ink); }
+.studio__finish { display: flex; gap: 0.5rem; }
+.studio__finish-opt { flex: 1; cursor: pointer; }
+.studio__finish-opt input { position: absolute; opacity: 0; width: 0; height: 0; }
+.studio__finish-opt span {
+  display: block; text-align: center; font-size: 0.72rem; color: var(--ink-body);
+  border: 1px solid var(--hairline-ink); border-radius: 8px; padding: 0.5em 0.4em;
+  transition: border-color 0.2s var(--ease-out), color 0.2s var(--ease-out);
+}
+.studio__finish-opt input:checked + span { border-color: var(--ink); color: var(--ink); font-weight: 500; }
+.studio__finish-opt input:focus-visible + span { outline: 2px solid var(--ink); outline-offset: 2px; }
+.studio__note { color: var(--slate-soft); font-size: 0.62rem; line-height: 1.4; }
 
 .configure__side { display: flex; flex-direction: column; gap: clamp(1.5rem, 3vw, 2rem); }
 .configure__side .variant { margin-bottom: 0; }

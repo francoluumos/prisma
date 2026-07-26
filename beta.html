@@ -327,6 +327,7 @@
         <form class="configure__panel" data-configure data-reveal>
           <div class="configure__lead">
           <figure class="configure__preview">
+            <canvas data-paint-canvas class="configure__canvas" width="1196" height="896" role="img" aria-label="Live preview of the Prisma One in your chosen frame and wheel colours" hidden></canvas>
             <img data-colour-preview src="/img/prisma-aero-moon-silver-side.webp" width="520" height="390" alt="Prisma One in the selected colour" loading="lazy" decoding="async" />
             <figcaption class="configure__preview-cap mono"><span data-colour-label>Moon Silver</span> · <span data-colour-finish>Metallic</span></figcaption>
           </figure>
@@ -419,6 +420,51 @@
                 </label>
               </li>
             </ul>
+          </fieldset>
+
+          <!-- ───── Colour studio (Beta): paint frame & wheels any colour ───── -->
+          <fieldset class="variant studio" data-studio hidden>
+            <legend class="variant__legend mono">Colour studio<span class="footer__tag mono">Beta</span></legend>
+
+            <div class="studio__region">
+              <div class="studio__region-head">
+                <span class="studio__region-label mono">Frame</span>
+                <label class="studio__pick">
+                  <input type="color" data-frame-colour value="#a3b0bb" aria-label="Custom frame colour" />
+                  <span class="studio__pick-hex mono" data-frame-hex>#A3B0BB</span>
+                </label>
+              </div>
+              <ul class="studio__chips" data-frame-presets></ul>
+              <div class="studio__pattern">
+                <label class="studio__file mono">
+                  <input type="file" accept="image/*" data-frame-pattern hidden />
+                  <span>Upload a pattern</span>
+                </label>
+                <button type="button" class="studio__clear mono" data-frame-pattern-clear hidden>Clear pattern</button>
+              </div>
+            </div>
+
+            <div class="studio__region">
+              <div class="studio__region-head">
+                <span class="studio__region-label mono">Wheels</span>
+                <label class="studio__pick">
+                  <input type="color" data-wheel-colour value="#1b1b1b" aria-label="Custom wheel colour" />
+                  <span class="studio__pick-hex mono" data-wheel-hex>#1B1B1B</span>
+                </label>
+              </div>
+              <ul class="studio__chips" data-wheel-presets></ul>
+            </div>
+
+            <div class="studio__region studio__region--finish">
+              <span class="studio__region-label mono">Finish</span>
+              <div class="studio__finish" role="radiogroup" aria-label="Finish">
+                <label class="studio__finish-opt"><input type="radio" name="finish" value="matte" /><span>Matte</span></label>
+                <label class="studio__finish-opt"><input type="radio" name="finish" value="metallic" checked /><span>Metallic</span></label>
+                <label class="studio__finish-opt"><input type="radio" name="finish" value="pearl" /><span>Pearl</span></label>
+              </div>
+            </div>
+
+            <p class="studio__note mono" data-studio-note></p>
           </fieldset>
 
           <fieldset class="variant">

@@ -1,6 +1,7 @@
 import "./style.css";
 import { initSite } from "./site";
 import { initConfigurator, initConfigBar, initModals } from "./configurator";
+import { initStudio } from "./paint/studio";
 
 /* ----------------------------------------------------------------
    Beta "Studio" page entry.
@@ -17,3 +18,7 @@ initSite();
 initConfigurator();
 initConfigBar();
 initModals();
+
+/* Stage 2 — the canvas paint engine (frame + wheel recolour). Progressive:
+   no-ops back to the curated image swap if unsupported or assets fail. */
+void initStudio();
