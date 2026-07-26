@@ -397,95 +397,15 @@
           </figure>
           <fieldset class="variant">
             <legend class="variant__legend mono">Frame size<span class="variant__legend-links"><button type="button" class="size-guide__btn mono" data-size-guide>Size&nbsp;guide</button><button type="button" class="size-guide__btn mono" data-geo-guide>Geometry</button></span></legend>
-            <ul class="variant__list">
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="size" value="Size 48" />
-                  <span class="variant__body">
-                    <span class="variant__name">Size 48</span>
-                    <span class="variant__meta mono">700c · rider 166–172 cm</span>
-                  </span>
-                </label>
-              </li>
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="size" value="Size 51" checked />
-                  <span class="variant__body">
-                    <span class="variant__name">Size 51</span>
-                    <span class="variant__meta mono">700c · rider 172–178 cm</span>
-                  </span>
-                </label>
-              </li>
-              <li>
-                <label class="variant__card">
-                  <input type="radio" name="size" value="Size 54" />
-                  <span class="variant__body">
-                    <span class="variant__name">Size 54</span>
-                    <span class="variant__meta mono">700c · rider 178–187 cm</span>
-                  </span>
-                </label>
-              </li>
-            </ul>
+            <div class="studio__finish" role="radiogroup" aria-label="Frame size">
+              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 48" /><span>Size 48</span></label>
+              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 51" checked /><span>Size 51</span></label>
+              <label class="studio__finish-opt"><input type="radio" name="size" value="Size 54" /><span>Size 54</span></label>
+            </div>
           </fieldset>
           </div>
 
           <div class="configure__side">
-          <fieldset class="variant">
-            <legend class="variant__legend mono">Colour</legend>
-            <ul class="variant__swatches">
-              <li>
-                <label class="swatch">
-                  <input type="radio" name="colour" value="Moon Silver" data-preview="/img/prisma-aero-moon-silver-side.webp" data-finish="Metallic" checked />
-                  <span class="swatch__chip" style="--swatch:#a3b0bb"></span>
-                  <span class="swatch__body">
-                    <span class="swatch__name">Moon Silver</span>
-                    <span class="swatch__finish mono">Metallic</span>
-                  </span>
-                </label>
-              </li>
-              <li>
-                <label class="swatch">
-                  <input type="radio" name="colour" value="Prisma Silver" data-preview="/img/prisma-aero-chameleon-silver-side.webp" data-finish="Pearl" />
-                  <span class="swatch__chip swatch__chip--pearl" style="--swatch:#c9ccc7"></span>
-                  <span class="swatch__body">
-                    <span class="swatch__name">Prisma Silver</span>
-                    <span class="swatch__finish mono">Pearl</span>
-                  </span>
-                </label>
-              </li>
-              <li>
-                <label class="swatch">
-                  <input type="radio" name="colour" value="Bordeaux Red" data-preview="/img/prisma-aero-bordeaux-red-side.webp" data-finish="Metallic" />
-                  <span class="swatch__chip" style="--swatch:#623c62"></span>
-                  <span class="swatch__body">
-                    <span class="swatch__name">Bordeaux Red</span>
-                    <span class="swatch__finish mono">Metallic</span>
-                  </span>
-                </label>
-              </li>
-              <li>
-                <label class="swatch">
-                  <input type="radio" name="colour" value="Sapphire Blue" data-preview="/img/prisma-aero-sapphire-blue-side.webp" data-finish="Metallic" />
-                  <span class="swatch__chip" style="--swatch:#0351a3"></span>
-                  <span class="swatch__body">
-                    <span class="swatch__name">Sapphire Blue</span>
-                    <span class="swatch__finish mono">Metallic</span>
-                  </span>
-                </label>
-              </li>
-              <li>
-                <label class="swatch">
-                  <input type="radio" name="colour" value="Olive Green" data-preview="/img/prisma-aero-olive-green-side.webp" data-finish="Matte" />
-                  <span class="swatch__chip" style="--swatch:#596553"></span>
-                  <span class="swatch__body">
-                    <span class="swatch__name">Olive Green</span>
-                    <span class="swatch__finish mono">Matte</span>
-                  </span>
-                </label>
-              </li>
-            </ul>
-          </fieldset>
-
           <!-- ───── Colour studio (Beta): paint frame & wheels any colour ───── -->
           <fieldset class="variant studio" data-studio hidden>
             <legend class="variant__legend mono">Colour studio<span class="footer__tag mono">Beta</span></legend>

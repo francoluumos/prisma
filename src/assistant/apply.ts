@@ -8,6 +8,7 @@
    catalog hex). A palette suggestion goes straight to the paint engine via a
    `prisma:paint` event.
    ---------------------------------------------------------------- */
+import { PRODUCTS } from "../data/products";
 import type { PaletteResult, Recommendation } from "./client";
 
 function setRadio(form: HTMLFormElement, name: string, value: string): HTMLInputElement | null {
@@ -23,10 +24,17 @@ export function applyRecommendation(rec: Recommendation): void {
   setRadio(form, "size", rec.size);
   setRadio(form, "drivetrain", rec.drivetrain);
   if (rec.pedals) setRadio(form, "pedals", rec.pedals);
+  // One bubbling change recomputes the configurator (price/summary). The Beta
+  // studio has no colour radios, so paint the recommended catalog colour onto
+  // the canvas directly via the event the studio listens for.
   const colour = setRadio(form, "colour", rec.colour);
-  // One bubbling change recomputes the whole configurator; dispatching it from
-  // the colour input also triggers the studio's colour-sync handler.
   (colour ?? form).dispatchEvent(new Event("change", { bubbles: true }));
+  const spec = PRODUCTS.aero.colours.find((c) => c.name === rec.colour);
+  if (spec) {
+    document.dispatchEvent(
+      new CustomEvent("prisma:paint", { detail: { frameHex: spec.hex, finish: spec.finish, label: spec.name } })
+    );
+  }
 }
 
 /** Apply an inspiration palette: exact hexes to the canvas, nearest preset to
