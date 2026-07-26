@@ -866,7 +866,8 @@ sub, small { font-size: 0.72em; }
 
 /* Variant dropdown (Beta): shift unit / pedals / assembly. */
 .variant__select {
-  width: 100%; font: inherit; font-size: 0.9rem; color: var(--ink);
+  width: 100%; min-width: 0; max-width: 100%; font: inherit; font-size: 0.9rem; color: var(--ink);
+  text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
   padding: 0.72rem 2.4rem 0.72rem 0.85rem;
   border: 1px solid var(--hairline-ink); border-radius: 10px; background-color: var(--paper);
   appearance: none; -webkit-appearance: none; cursor: pointer;
@@ -987,7 +988,7 @@ sub, small { font-size: 0.72em; }
 .assistant__swatch-row li { inline-size: 30px; block-size: 30px; border-radius: 6px; background: var(--swatch); border: 1px solid var(--hairline-ink); }
 @media (max-width: 860px) { .assistant__grid { grid-template-columns: 1fr; } }
 
-.configure__side { display: flex; flex-direction: column; gap: clamp(1.5rem, 3vw, 2rem); }
+.configure__side { display: flex; flex-direction: column; gap: clamp(1.5rem, 3vw, 2rem); min-width: 0; }
 .configure__side .variant { margin-bottom: 0; }
 .configure__total-label { color: var(--slate-soft); }
 .configure__price { color: var(--ink); font-variant-numeric: tabular-nums; }
