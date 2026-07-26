@@ -117,7 +117,7 @@ const AERO: Product = {
   ],
   colours: [
     { name: "Moon Silver", hex: "#a3b0bb", finish: "metallic", preview: "/img/prisma-aero-moon-silver-side.webp" },
-    { name: "Chameleon Silver", hex: "#c9ccc7", finish: "pearl", preview: "/img/prisma-aero-chameleon-silver-side.webp" },
+    { name: "Prisma Silver", hex: "#c9ccc7", finish: "pearl", preview: "/img/prisma-aero-chameleon-silver-side.webp" },
     { name: "Bordeaux Red", hex: "#623c62", finish: "metallic", preview: "/img/prisma-aero-bordeaux-red-side.webp" },
     { name: "Sapphire Blue", hex: "#0351a3", finish: "metallic", preview: "/img/prisma-aero-sapphire-blue-side.webp" },
     { name: "Olive Green", hex: "#596553", finish: "matte", preview: "/img/prisma-aero-olive-green-side.webp" },
