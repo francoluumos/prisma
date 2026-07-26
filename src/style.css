@@ -199,6 +199,14 @@ sub, small { font-size: 0.72em; }
   border-bottom-color: var(--hairline);
   background: color-mix(in oklab, var(--paper) 90%, transparent);
 }
+/* Mobile: slide the header out on scroll-down, back on scroll-up. */
+@media (max-width: 720px) {
+  .nav { transition: transform 0.35s var(--ease-out), border-color 0.4s var(--ease-out), background 0.4s var(--ease-out); will-change: transform; }
+  .nav[data-hidden] { transform: translateY(-100%); }
+}
+@media (max-width: 720px) and (prefers-reduced-motion: reduce) {
+  .nav[data-hidden] { transform: none; } /* keep the header pinned, no motion */
+}
 .nav__inner {
   display: flex;
   align-items: center;

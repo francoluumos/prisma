@@ -18,11 +18,22 @@ export function initSite(): void {
   /* Cookie consent banner (shown until the visitor chooses). */
   initCookieConsent();
 
-  /* Nav: hairline + denser glass once scrolled */
+  /* Nav: hairline + denser glass once scrolled; on mobile, auto-hide on
+     scroll-down and reveal on scroll-up (the transform is gated to mobile in
+     CSS, and disabled under reduced motion). */
   const nav = document.querySelector<HTMLElement>("[data-nav]");
+  const NAV_REVEAL_AT = 80; // always shown above this scroll depth
+  let lastY = window.scrollY;
   const onScrollNav = () => {
     if (!nav) return;
-    nav.toggleAttribute("data-scrolled", window.scrollY > 8);
+    const y = window.scrollY;
+    nav.toggleAttribute("data-scrolled", y > 8);
+    if (y <= NAV_REVEAL_AT || y < lastY - 4) {
+      nav.removeAttribute("data-hidden"); // near the top, or scrolling up
+    } else if (y > lastY + 4) {
+      nav.setAttribute("data-hidden", ""); // scrolling down
+    }
+    lastY = y;
   };
   onScrollNav();
   window.addEventListener("scroll", onScrollNav, { passive: true });
