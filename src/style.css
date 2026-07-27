@@ -699,12 +699,22 @@ sub, small { font-size: 0.72em; }
    Footer
    ============================================================ */
 .footer {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 1.25rem 2rem;
   padding-block: 2.5rem;
+}
+/* Full-bleed top divider — spans the viewport while content stays centered. */
+.footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100vw;
   border-top: 1px solid var(--hairline);
 }
 .footer__brand {
