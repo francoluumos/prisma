@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Prisma — Pickup near you</title>
+    <meta
+      name="description"
+      content="Collect your Prisma bike 15 minutes from home. We're opening a Swiss-wide network of local partner shops for professional assembly and pickup. Enter your town to see the nearest planned location."
+    />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+    <meta property="og:title" content="Prisma — Pickup near you" />
+    <meta
+      property="og:description"
+      content="A Swiss-wide network of local partner shops for pickup and assembly — 15 minutes from almost anywhere. Launching soon."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/img/prisma-one-profile.webp" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="scroll-progress" data-progress aria-hidden="true"></div>
+
+    <!-- ───────────────────────── Nav ───────────────────────── -->
+    <header class="nav" data-nav>
+      <div class="nav__inner shell">
+        <a class="wordmark" href="/index.html" aria-label="Prisma — home">
+          <span class="wordmark__glyph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+              <path d="M12 3 L21 19 L3 19 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span class="wordmark__text">PRISMA</span>
+        </a>
+        <div class="nav__models" role="group" aria-label="Choose a model">
+          <a class="nav__model" href="/index.html">Aero</a>
+          <a class="nav__model" href="/gravel.html">Gravel</a>
+        </div>
+        <nav class="nav__links" aria-label="Primary">
+          <a href="/index.html#frame">Frame</a>
+          <a href="/index.html#geometry">Geometry</a>
+          <a href="/pickup.html" aria-current="page">Pickup</a>
+        </nav>
+        <a class="btn btn--ghost nav__cta" href="/index.html#reserve">Reserve</a>
+      </div>
+    </header>
+
+    <main id="main" class="shell pk">
+      <span id="top"></span>
+
+      <span class="pk-badge" data-reveal><span class="pk-pulse" aria-hidden="true"></span>Pickup network · Coming soon</span>
+
+      <div class="pk-hero" data-reveal>
+        <h1 class="display pk-title">Collect your Prisma,<br />15&nbsp;minutes from home.</h1>
+        <p class="pk-lede body-lg">
+          We're opening a Swiss-wide network of local partner shops where you'll pick up your bike —
+          professionally assembled and checked. <b>Almost everywhere in Switzerland is within a short
+          drive.</b> Enter your town to see the nearest planned location.
+        </p>
+      </div>
+
+      <div class="pk-search" data-reveal>
+        <input id="pk-town" list="pk-townlist" placeholder="Your town, e.g. Winterthur" autocomplete="off" aria-label="Your town" />
+        <datalist id="pk-townlist"></datalist>
+        <button class="btn btn--solid" id="pk-find" type="button">Find pickup near me</button>
+      </div>
+      <div class="pk-result" id="pk-result">
+        <span class="pk-km" id="pk-rkm">—</span>
+        <span class="pk-rtxt"><b id="pk-rtitle">Nearest planned pickup</b><span id="pk-rsub" class="mono"></span></span>
+        <span class="pk-soon mono">Opening soon</span>
+      </div>
+
+      <div class="pk-mapcard" data-reveal>
+        <canvas id="pk-map"></canvas>
+        <div class="pk-maptag mono">Planned coverage · Switzerland</div>
+        <div class="pk-legend">
+          <div class="pk-legrow"><span class="pk-sw pk-sw--pt"></span>Planned pickup point</div>
+          <div class="pk-legrow"><span class="pk-sw pk-sw--cov"></span>~15-min catchment</div>
+          <div class="pk-legrow"><span class="pk-sw pk-sw--you"></span>Your town</div>
+        </div>
+      </div>
+
+      <div class="pk-stats" data-reveal>
+        <div class="pk-stat"><span class="pk-v">222</span><span class="pk-k mono">Planned pickup points</span><span class="pk-note mono">Target network</span></div>
+        <div class="pk-stat"><span class="pk-v">~15<span class="pk-u"> min</span></span><span class="pk-k mono">Typical drive to a point</span><span class="pk-note mono">Across populated areas</span></div>
+        <div class="pk-stat"><span class="pk-v">~95<span class="pk-u">%</span></span><span class="pk-k mono">Of Switzerland in reach</span><span class="pk-note mono">Once the network is live</span></div>
+      </div>
+
+      <div class="pk-notify" data-reveal>
+        <div class="pk-notify-copy">
+          <h2 class="display-sm">Be first to know when your pickup point opens.</h2>
+          <p>We're signing partner shops region by region. Leave your email and we'll tell you the moment there's a pickup point near you.</p>
+        </div>
+        <form id="pk-notify" novalidate>
+          <input id="pk-email" type="email" placeholder="you@example.ch" aria-label="Email address" required />
+          <button class="btn btn--solid" type="submit">Notify me</button>
+        </form>
+      </div>
+
+      <p class="pk-disclaimer mono">
+        Coverage shown is Prisma's <b>planned</b> partner network and is illustrative while we sign locations —
+        individual points open progressively and are not yet bookable. Reach is estimated from a short-drive
+        radius around candidate locations. No shop is a confirmed Prisma partner until it appears here by name.
+      </p>
+    </main>
+
+    <!-- ───────────────────── Footer ───────────────────── -->
+    <footer class="footer shell">
+      <div class="footer__brand">
+        <span class="wordmark__glyph" aria-hidden="true">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none">
+            <path d="M12 3 L21 19 L3 19 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+          </svg>
+        </span>
+        <span class="wordmark__text">PRISMA</span>
+      </div>
+      <p class="footer__line mono">Made to move · © 2026</p>
+      <nav class="footer__links" aria-label="Footer">
+        <a href="/index.html#frame">Frame</a>
+        <a href="/index.html#spec">Spec</a>
+        <a href="/pickup.html" aria-current="page">Pickup</a>
+        <a href="/beta.html">Studio<span class="footer__tag mono">Beta</span></a>
+      </nav>
+      <nav class="footer__legal" aria-label="Legal">
+        <a href="/terms.html">Terms &amp; Conditions</a>
+        <a href="/cookies.html">Cookie Policy</a>
+        <a href="/impressum.html">Impressum</a>
+      </nav>
+    </footer>
+
+    <script type="module" src="/src/pickup.ts"></script>
+  </body>
+</html>
