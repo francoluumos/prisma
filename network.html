@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prisma — Partner Network (Internal)</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+  :root {
+    --paper:#ffffff; --sunk:#f4f5f7; --card:#ffffff;
+    --hairline:#e6e8ea; --hairline-strong:#d2d6db;
+    --ink:#191b1d; --body:#3b3e42; --slate:#696e74; --slate-soft:#8b9096;
+    --accent:#3f5fd0; --accent-soft:rgba(63,95,208,0.14);
+    --good:#2f9e57; --warn:#df4330;
+    --land:#eef0f2; --land-stroke:#c7ccd2;
+    --shadow:0 1px 2px rgba(16,18,20,.04), 0 12px 30px rgba(16,18,20,.06);
+    --font-display:"Space Grotesk","Segoe UI",system-ui,sans-serif;
+    --font-body:"Inter",system-ui,-apple-system,sans-serif;
+    --font-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --paper:#0d0e10; --sunk:#141619; --card:#141619;
+      --hairline:#24272b; --hairline-strong:#343940;
+      --ink:#f1f2f4; --body:#c3c7cc; --slate:#9aa0a6; --slate-soft:#767c83;
+      --accent:#7f96ef; --accent-soft:rgba(127,150,239,0.18);
+      --good:#42c078; --warn:#ff6a52;
+      --land:#191c20; --land-stroke:#333a41;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="light"] {
+    --paper:#ffffff; --sunk:#f4f5f7; --card:#ffffff;
+    --hairline:#e6e8ea; --hairline-strong:#d2d6db;
+    --ink:#191b1d; --body:#3b3e42; --slate:#696e74; --slate-soft:#8b9096;
+    --accent:#3f5fd0; --accent-soft:rgba(63,95,208,0.14);
+    --good:#2f9e57; --warn:#df4330;
+    --land:#eef0f2; --land-stroke:#c7ccd2;
+    --shadow:0 1px 2px rgba(16,18,20,.04), 0 12px 30px rgba(16,18,20,.06);
+  }
+  :root[data-theme="dark"] {
+    --paper:#0d0e10; --sunk:#141619; --card:#141619;
+    --hairline:#24272b; --hairline-strong:#343940;
+    --ink:#f1f2f4; --body:#c3c7cc; --slate:#9aa0a6; --slate-soft:#767c83;
+    --accent:#7f96ef; --accent-soft:rgba(127,150,239,0.18);
+    --good:#42c078; --warn:#ff6a52;
+    --land:#191c20; --land-stroke:#333a41;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px rgba(0,0,0,.4);
+  }
+
+  * { box-sizing:border-box; }
+  body { margin:0; }
+  .wrap {
+    font-family:var(--font-body); color:var(--body); background:var(--paper);
+    -webkit-font-smoothing:antialiased; line-height:1.5;
+    min-height:100vh; padding:clamp(1.1rem,3vw,2.4rem);
+    display:flex; flex-direction:column; gap:1.4rem;
+  }
+  .eyebrow {
+    font-family:var(--font-mono); font-size:.68rem; letter-spacing:.22em;
+    text-transform:uppercase; color:var(--slate); margin:0 0 .5rem;
+  }
+  h1 {
+    font-family:var(--font-display); font-weight:700; color:var(--ink);
+    font-size:clamp(1.7rem,3.6vw,2.7rem); line-height:1.02; letter-spacing:-.03em;
+    margin:0; text-wrap:balance; max-width:18ch;
+  }
+  .lede { margin:.7rem 0 0; max-width:60ch; font-size:clamp(.98rem,1.4vw,1.08rem); }
+  .lede b { color:var(--ink); font-weight:600; }
+
+  .grid { display:grid; grid-template-columns:1fr; gap:1.4rem; }
+  @media (min-width:960px){ .grid { grid-template-columns:minmax(0,1fr) 340px; align-items:start; } }
+
+  .card {
+    background:var(--card); border:1px solid var(--hairline); border-radius:16px;
+    box-shadow:var(--shadow);
+  }
+  .mapcard { position:relative; overflow:hidden; }
+  #map { display:block; width:100%; height:min(66vh,640px); touch-action:none; }
+  @media (max-width:600px){ #map { height:56vh; } }
+
+  .legend {
+    position:absolute; left:14px; bottom:12px;
+    display:flex; flex-direction:column; gap:.4rem;
+    background:color-mix(in srgb,var(--card) 82%, transparent);
+    backdrop-filter:blur(8px); border:1px solid var(--hairline);
+    border-radius:10px; padding:.6rem .7rem; font-size:.7rem;
+  }
+  .legend .row { display:flex; align-items:center; gap:.5rem; color:var(--slate); }
+  .legend .row b { color:var(--ink); font-weight:600; }
+  .dot { width:11px; height:11px; border-radius:50%; flex:0 0 auto; }
+  .dot--net { background:var(--accent); }
+  .dot--gap { background:var(--warn); }
+  .dot--cov { background:var(--good); }
+  .dot--shop { background:var(--slate-soft); }
+  .disc { width:11px;height:11px;border-radius:50%;flex:0 0 auto;
+          background:var(--accent-soft); border:1px solid var(--accent); }
+
+  .tooltip {
+    position:absolute; pointer-events:none; z-index:5; opacity:0;
+    transform:translate(-50%,-118%); transition:opacity .12s;
+    background:var(--ink); color:var(--paper);
+    padding:.5rem .65rem; border-radius:8px; font-size:.74rem; line-height:1.35;
+    max-width:230px; box-shadow:0 8px 22px rgba(0,0,0,.28);
+  }
+  .tooltip .t-name { font-family:var(--font-display); font-weight:600; font-size:.82rem; }
+  .tooltip .t-meta { font-family:var(--font-mono); font-size:.64rem; letter-spacing:.04em;
+                     opacity:.8; margin-top:.15rem; text-transform:uppercase; }
+
+  .side { display:flex; flex-direction:column; gap:1.1rem; }
+  .panel { padding:1.05rem 1.1rem; }
+  .panel h2 {
+    font-family:var(--font-mono); font-size:.66rem; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--slate); margin:0 0 .85rem; font-weight:500;
+  }
+
+  .headline { display:flex; align-items:baseline; gap:.5rem; }
+  .headline .big {
+    font-family:var(--font-display); font-weight:700; color:var(--accent);
+    font-size:2.9rem; line-height:.9; letter-spacing:-.03em; font-variant-numeric:tabular-nums;
+  }
+  .headline .unit { font-family:var(--font-display); font-weight:600; color:var(--ink); font-size:1.1rem; }
+  .headline + .sub { margin-top:.45rem; font-size:.82rem; color:var(--slate); }
+  .headline + .sub b { color:var(--body); font-weight:600; font-variant-numeric:tabular-nums; }
+
+  .spark { width:100%; height:52px; margin-top:.9rem; display:block; }
+
+  .tiles { display:grid; grid-template-columns:1fr 1fr; gap:.6rem; margin-top:1rem; }
+  .tile { border:1px solid var(--hairline); border-radius:11px; padding:.6rem .7rem; background:var(--sunk); }
+  .tile .k { font-family:var(--font-mono); font-size:.58rem; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); }
+  .tile .v { font-family:var(--font-display); font-weight:600; color:var(--ink); font-size:1.28rem; margin-top:.15rem; font-variant-numeric:tabular-nums; }
+  .tile .v small { font-size:.72rem; color:var(--slate); font-weight:500; }
+
+  .ctl { display:flex; flex-direction:column; gap:.35rem; }
+  .ctl-head { display:flex; justify-content:space-between; align-items:baseline; }
+  .ctl-head label { font-family:var(--font-mono); font-size:.66rem; letter-spacing:.1em; text-transform:uppercase; color:var(--slate); }
+  .ctl-head .val { font-family:var(--font-display); font-weight:600; color:var(--ink); font-variant-numeric:tabular-nums; }
+  input[type=range]{ -webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:4px;
+    background:var(--hairline-strong); outline:none; margin:.5rem 0 .2rem; }
+  input[type=range]::-webkit-slider-thumb{ -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+    background:var(--accent); border:2px solid var(--paper); box-shadow:0 1px 4px rgba(0,0,0,.3); cursor:pointer; }
+  input[type=range]::-moz-range-thumb{ width:18px; height:18px; border-radius:50%; background:var(--accent);
+    border:2px solid var(--paper); cursor:pointer; }
+  .presets { display:flex; gap:.35rem; margin-top:.5rem; flex-wrap:wrap; }
+  .presets button, .chips button {
+    font-family:var(--font-mono); font-size:.66rem; letter-spacing:.04em; cursor:pointer;
+    padding:.32rem .55rem; border-radius:7px; border:1px solid var(--hairline-strong);
+    background:var(--card); color:var(--body); transition:all .15s;
+  }
+  .presets button:hover, .chips button:hover { border-color:var(--accent); color:var(--ink); }
+  .chips { display:flex; gap:.35rem; margin-top:.55rem; }
+  .chips button.on { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .rowline { display:flex; align-items:center; justify-content:space-between; margin-top:1rem; }
+  .toggle { display:inline-flex; align-items:center; gap:.5rem; cursor:pointer; font-size:.8rem; color:var(--body); user-select:none; }
+  .toggle input { position:absolute; opacity:0; width:0;height:0; }
+  .switch { width:34px; height:19px; border-radius:19px; background:var(--hairline-strong); position:relative; transition:background .18s; flex:0 0 auto; }
+  .switch::after { content:""; position:absolute; top:2px; left:2px; width:15px; height:15px; border-radius:50%; background:var(--paper); transition:transform .18s; box-shadow:0 1px 2px rgba(0,0,0,.3); }
+  .toggle input:checked + .switch { background:var(--accent); }
+  .toggle input:checked + .switch::after { transform:translateX(15px); }
+  .toggle input:focus-visible + .switch { outline:2px solid var(--accent); outline-offset:2px; }
+
+  .gaps { list-style:none; margin:.4rem 0 0; padding:0; display:flex; flex-direction:column; }
+  .gaps li { display:flex; justify-content:space-between; gap:.6rem; padding:.4rem 0; border-top:1px solid var(--hairline); font-size:.8rem; }
+  .gaps li:first-child { border-top:0; }
+  .gaps .g-name { color:var(--ink); }
+  .gaps .g-km { font-family:var(--font-mono); font-size:.7rem; color:var(--warn); font-variant-numeric:tabular-nums; }
+
+  .foot { font-size:.72rem; color:var(--slate-soft); max-width:80ch; line-height:1.55; }
+  .foot code { font-family:var(--font-mono); font-size:.9em; color:var(--slate); }
+  button:focus-visible, input:focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  @media (prefers-reduced-motion:reduce){ *{ transition:none!important; } }
+</style>
+  </head>
+  <body>
+<div class="wrap">
+  <header>
+    <p class="eyebrow">Prisma &middot; Partner network &middot; Switzerland</p>
+    <h1>Fifteen minutes from a Prisma partner.</h1>
+    <p class="lede">Every dot is a real bicycle shop or mechanic in Switzerland (OpenStreetMap).
+      Drag the slider to grow the partner network and watch how much of the population falls
+      within a short drive of a pickup point. <b>The shops already exist</b> &mdash; this is a
+      recruiting map, not a coverage gap.</p>
+  </header>
+
+  <div class="grid">
+    <div class="card mapcard">
+      <canvas id="map"></canvas>
+      <div class="tooltip" id="tip"></div>
+      <div class="legend" id="legend">
+        <div class="row"><span class="dot dot--net"></span><b>Partner</b>&nbsp;(in network)</div>
+        <div class="row"><span class="disc"></span>15-min catchment</div>
+        <div class="row"><span class="dot dot--gap"></span>Uncovered town</div>
+        <div class="row"><span class="dot dot--shop"></span>Other shop</div>
+      </div>
+    </div>
+
+    <div class="side">
+      <div class="card panel">
+        <h2>Population within reach</h2>
+        <div class="headline"><span class="big" id="pct">&mdash;</span><span class="unit">%</span></div>
+        <div class="sub"><b id="reached">&mdash;</b> of <span id="totalpop">&mdash;</span> people &middot; <b id="drive" ></b></div>
+        <canvas class="spark" id="spark"></canvas>
+        <div class="tiles">
+          <div class="tile"><div class="k">Partners active</div><div class="v" id="pcount">&mdash;</div></div>
+          <div class="tile"><div class="k">Uncovered towns</div><div class="v" id="gapct">&mdash;</div></div>
+          <div class="tile"><div class="k">People in gaps</div><div class="v" id="gappop">&mdash;</div></div>
+          <div class="tile"><div class="k">Shops in Switzerland</div><div class="v" id="shopct">&mdash;</div></div>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <h2>Build the network</h2>
+        <div class="ctl">
+          <div class="ctl-head"><label for="nrange">Partners to recruit</label><span class="val" id="nlabel">150</span></div>
+          <input type="range" id="nrange" min="0" max="222" value="150" step="1" />
+          <div class="presets">
+            <button data-n="50">Top 50</button>
+            <button data-n="100">Top 100</button>
+            <button data-n="150">Top 150</button>
+            <button data-n="222">All 222</button>
+          </div>
+        </div>
+        <div class="ctl" style="margin-top:1rem;">
+          <div class="ctl-head"><label>Drive-time proxy (radius)</label></div>
+          <div class="chips" id="chips">
+            <button data-r="5">5&nbsp;km</button>
+            <button data-r="8" class="on">8&nbsp;km</button>
+            <button data-r="10">10&nbsp;km</button>
+            <button data-r="12">12&nbsp;km</button>
+          </div>
+        </div>
+        <div class="rowline">
+          <label class="toggle"><input type="checkbox" id="showall" /><span class="switch"></span>Show all 1,438 shops</label>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <h2>Largest towns still uncovered</h2>
+        <ul class="gaps" id="gaplist"></ul>
+      </div>
+    </div>
+  </div>
+
+  <p class="foot">
+    Supply: <code>shop=bicycle</code> / bicycle repair from OpenStreetMap (ODbL), Switzerland, cleaned & de-duplicated to 1,438 shops.
+    Demand: 2,128 municipality centroids weighted by population (Wikidata, ~8.65 M total).
+    Coverage uses a straight-line radius as a first-pass proxy for a 15-minute drive &mdash; optimistic in the Alps,
+    where a true road-network isochrone is the next refinement. Partner order is a greedy maximum-coverage
+    ranking (each added partner reaches the most not-yet-covered people); centroid demand slightly inflates the
+    very top few. Remote Alpine / Ticino / Jura communes are the expected exceptions.
+  </p>
+</div>
+    <script type="module" src="/src/network.ts"></script>
+  </body>
+</html>
