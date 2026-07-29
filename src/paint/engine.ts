@@ -24,8 +24,25 @@ function makeCanvas(w: number, h: number): AnyCanvas {
   return c;
 }
 
+// Each uploaded/preset pattern bitmap gets a stable unique id so the region
+// cache keys distinct images apart. Without this, two different pattern uploads
+// hash to the same key ("p:cover") and the second upload returns the first's
+// cached render — the old image "sticks" after Clear pattern + re-upload.
+let patternSeq = 0;
+const patternIds = new WeakMap<ImageBitmap, number>();
+function patternId(bmp: ImageBitmap): number {
+  let id = patternIds.get(bmp);
+  if (id === undefined) {
+    id = ++patternSeq;
+    patternIds.set(bmp, id);
+  }
+  return id;
+}
+
 function hashFill(fill: Fill): string {
-  return fill.kind === "solid" ? "s:" + fill.hex.toLowerCase() : "p:" + fill.mode;
+  return fill.kind === "solid"
+    ? "s:" + fill.hex.toLowerCase()
+    : "p:" + fill.mode + ":" + patternId(fill.bitmap);
 }
 
 /** Draw a bitmap to cover (fill, cropping) or tile a w×h box. */
