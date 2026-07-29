@@ -1,6 +1,14 @@
 # Commerce backend — decision doc
 
-_Status: decision pending. Last updated 2026-07-29._
+_Status: **DECIDED — Supabase-first, migration-ready.** Last updated 2026-07-29._
+
+> **Decision (2026-07-29):** build the commerce layer custom on **Supabase +
+> Stripe (Tax + Invoicing)** now, following the six migration-cheap principles
+> in §7-bis, and move the order/finance system of record to **Odoo (free,
+> self-hosted Community)** later. Odoo.sh is a *paid* managed-hosting option and
+> is **not** the free target — the free target is self-hosted Community; the
+> hosting choice is deferred to migration time. Estimated later migration:
+> **~1–3 focused weeks** if built to the principles below.
 
 How Prisma runs orders, customers, inventory, invoicing and fulfilment behind
 the custom Vite storefront. Sibling to `payments-plan.md` and
@@ -183,6 +191,45 @@ components/stock (add ONLY when you actually track it)
 RLS: customers see only their own orders; admin via service-role on internal pages.
 
 ---
+
+## 7-bis. Migration cost & how to keep it cheap (the chosen path)
+
+Later Supabase → Odoo migration is **~1–3 focused weeks** if built to the
+principles below (4–8+ weeks and risky if not). The dominant cost is **domain
+re-mapping + re-pointing integrations**, NOT data export.
+
+| Migration work | Effort |
+| --- | --- |
+| Export/import customers, orders, partners → Odoo | Low (CSV/API import) |
+| Re-point order-capture (webhook → Odoo API not Supabase) | Low–Med (small if one order-sink) |
+| Map model → Odoo objects (build→`sale.order`+lines, addr→`res.partner`, pickup→carrier/custom fields, assembly→BOM) | **Med — the real work** |
+| Invoicing/VAT: Stripe → Odoo (or keep Stripe + sync) | Med |
+| Admin retraining | Minimal (Odoo admin exists) |
+
+**Six principles to keep the migration near 1 week — build to these now:**
+1. **One order-sink** — every order write goes through a single
+   `createOrder(payload)` module. Swapping to Odoo = reimplement that one function.
+2. **Stable external IDs** on every entity → map to Odoo `ir.model.data`; imports
+   become idempotent/re-runnable.
+3. **Model in Odoo's shape now** — order / line / partner / address translate 1:1
+   to `sale.order` / `sale.order.line` / `res.partner`.
+4. **Keep the back-office OUT** — Stripe Tax + Invoicing; don't hand-build
+   inventory/invoicing. Nothing there to migrate; Odoo takes that role wholesale.
+5. **Stripe is the constant** — store `stripe_session_id` / `payment_intent` on
+   each order so Odoo can reconcile.
+6. **Plain relational tables** in the order path — no Supabase-only exotica; trivial export.
+
+**Odoo target hosting (deferred to migration time):** free = **self-hosted
+Community** (Docker/VPS; Community includes Sales, Inventory, MRP/BOM assembly,
+Purchase, Invoicing, Swiss `l10n_ch` VAT+QR-bill; lacks full Accounting → export
+to fiduciary/Bexio). **Odoo.sh is paid** managed hosting — a convenience, not the
+free path. Reusing the DancingQueens instance is a separate option (couples the
+two businesses) — not chosen; Prisma stays independent.
+
+**Why not Odoo-first, given it's "free"?** Chosen path trades a small future
+migration for launch speed + UX simplicity now. Note the subscription saving is
+minor (Supabase free tier ≈ self-hosted Community ≈ free), so the real driver is
+speed/simplicity, not cost — accepted with eyes open.
 
 ## 8. Roadmap
 
