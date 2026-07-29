@@ -86,13 +86,14 @@
 
             <!-- Proposed mechanic (only for pickup) -->
             <div class="co-pickup" data-pickup-panel hidden>
-              <p class="co-sec__hint">Your proposed pickup point <span data-pickup-near></span>. Final assignment after your address is verified.</p>
+              <p class="co-sec__hint">Your nearest pickup point <span data-pickup-near></span>, based on your delivery address. Final assignment once the partner is confirmed.</p>
               <div class="co-pickup__card">
                 <span class="co-pickup__name" data-pickup-name></span>
                 <span class="co-pickup__line" data-pickup-address></span>
                 <span class="co-pickup__line mono" data-pickup-phone></span>
                 <span class="co-pickup__line mono" data-pickup-email></span>
-                <span class="co-pill mono">Example partner</span>
+                <span class="co-pickup__drive mono" data-pickup-drive></span>
+                <span class="co-pill mono">Proposed · not yet confirmed</span>
               </div>
             </div>
           </section>
@@ -201,6 +202,7 @@
               <span class="co-meta-sub" data-sum-pickup-address></span>
               <span class="co-meta-sub mono" data-sum-pickup-phone></span>
               <span class="co-meta-sub mono" data-sum-pickup-email></span>
+              <span class="co-meta-sub co-meta-drive" data-sum-pickup-drive></span>
             </div>
           </div>
         </aside>

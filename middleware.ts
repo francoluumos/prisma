@@ -10,8 +10,10 @@
 // To take the site public again: delete this file (or narrow `matcher` back to
 // just ["/network", "/network.html", "/network-data.json"]).
 export const config = {
-  // Match every path except Vercel's internal endpoints (speed-insights, etc.).
-  matcher: ["/((?!_vercel).*)"],
+  // Match every path except Vercel internals (speed-insights) and /api/* —
+  // the Stripe webhook can't send the password, and the checkout endpoint
+  // does its own validation. The rest of the site stays gated.
+  matcher: ["/((?!_vercel|api/).*)"],
 };
 
 export default function middleware(request: Request): Response | undefined {

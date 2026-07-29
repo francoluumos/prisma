@@ -23,14 +23,53 @@ const METHODS: Record<"home" | "pickup", Method> = {
   pickup: { label: "Pickup at a local partner", fee: 0, lead: "Ready to collect in 5–7 weeks" },
 };
 
-/* --- placeholder proposed pickup partner (fictional; real one assigned
-       from the pickup network once the address is verified) --- */
-const PROPOSED_PARTNER = {
-  name: "Velowerkstatt (example partner)",
-  address: "Musterstrasse 12, 8000 Zürich",
-  phone: "+41 44 000 00 00",
-  email: "pickup@example.ch",
-};
+/* --- real mechanics database (public/checkout-mechanics.json, from OSM).
+       These shops are NOT confirmed Prisma partners yet — we surface the
+       nearest one as a proposal; confirmed partners get wired in later. --- */
+interface Mechanic {
+  n: string; la: number; lo: number; st: string; z: string; c: string; p: string; e: string;
+}
+let mechanics: Mechanic[] | null = null;
+async function loadMechanics(): Promise<Mechanic[]> {
+  if (!mechanics) {
+    try {
+      mechanics = (await (await fetch("/checkout-mechanics.json")).json()) as Mechanic[];
+    } catch {
+      mechanics = [];
+    }
+  }
+  return mechanics;
+}
+
+function haversineKm(la1: number, lo1: number, la2: number, lo2: number): number {
+  const R = 6371;
+  const dLa = ((la2 - la1) * Math.PI) / 180;
+  const dLo = ((lo2 - lo1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLa / 2) ** 2 +
+    Math.cos((la1 * Math.PI) / 180) * Math.cos((la2 * Math.PI) / 180) * Math.sin(dLo / 2) ** 2;
+  return 2 * R * Math.asin(Math.sqrt(a));
+}
+
+/** Geocode a Swiss address to WGS84 lat/lon via the free GeoAdmin API. */
+const geocodeCache = new Map<string, { lat: number; lon: number } | null>();
+async function geocode(text: string): Promise<{ lat: number; lon: number } | null> {
+  if (!text.trim()) return null;
+  if (geocodeCache.has(text)) return geocodeCache.get(text)!;
+  let coord: { lat: number; lon: number } | null = null;
+  try {
+    const url =
+      "https://api3.geo.admin.ch/rest/services/api/SearchServer" +
+      `?type=locations&origins=address,zipcode,gg25&limit=1&sr=4326&searchText=${encodeURIComponent(text)}`;
+    const d = await (await fetch(url)).json();
+    const a = d.results?.[0]?.attrs;
+    if (a && typeof a.lat === "number" && typeof a.lon === "number") coord = { lat: a.lat, lon: a.lon };
+  } catch {
+    /* offline / rate-limited → leave null */
+  }
+  geocodeCache.set(text, coord);
+  return coord;
+}
 
 /* --- read the build from the URL, falling back to the product defaults --- */
 function readBuild(): {
@@ -85,9 +124,16 @@ if (form) {
   const pickupPanel = $("[data-pickup-panel]");
   const sumPickup = $("[data-sum-pickup]");
 
+  // Nearest-mechanic result for the current delivery address (null until found).
+  let pickup: { m: Mechanic; km: number; min: number } | null = null;
+
+  const currentMethod = () =>
+    (form.querySelector<HTMLInputElement>('input[name="method"]:checked')?.value || "home") as
+      | "home"
+      | "pickup";
+
   const render = () => {
-    const method = (form.querySelector<HTMLInputElement>('input[name="method"]:checked')?.value ||
-      "home") as "home" | "pickup";
+    const method = currentMethod();
     const m = METHODS[method];
     set("[data-sum-method-label]", m.label);
     set("[data-sum-delivery]", m.fee ? fmt(m.fee) : "Free");
@@ -97,17 +143,36 @@ if (form) {
     const isPickup = method === "pickup";
     if (pickupPanel) pickupPanel.hidden = !isPickup;
     if (sumPickup) sumPickup.hidden = !isPickup;
+
     if (isPickup) {
-      set("[data-pickup-name]", PROPOSED_PARTNER.name);
-      set("[data-pickup-address]", PROPOSED_PARTNER.address);
-      set("[data-pickup-phone]", PROPOSED_PARTNER.phone);
-      set("[data-pickup-email]", PROPOSED_PARTNER.email);
-      set("[data-sum-pickup-name]", PROPOSED_PARTNER.name);
-      set("[data-sum-pickup-address]", PROPOSED_PARTNER.address);
-      set("[data-sum-pickup-phone]", PROPOSED_PARTNER.phone);
-      set("[data-sum-pickup-email]", PROPOSED_PARTNER.email);
-      const city = $<HTMLInputElement>("[data-addr-city]")?.value.trim();
-      set("[data-pickup-near]", city ? `near ${city}` : "");
+      if (pickup) {
+        const { m: mech, km, min } = pickup;
+        const addr = [mech.st, [mech.z, mech.c].filter(Boolean).join(" ")].filter(Boolean).join(", ");
+        const drive = `~${min} min by car · ${km} km`;
+        set("[data-pickup-name]", mech.n);
+        set("[data-pickup-address]", addr || mech.c || "");
+        set("[data-pickup-phone]", mech.p || "Phone on confirmation");
+        set("[data-pickup-email]", mech.e || "");
+        set("[data-pickup-drive]", drive);
+        set("[data-pickup-near]", mech.c ? `is in ${mech.c}` : "");
+        set("[data-sum-pickup-name]", mech.n);
+        set("[data-sum-pickup-address]", addr);
+        set("[data-sum-pickup-phone]", mech.p || "");
+        set("[data-sum-pickup-email]", mech.e || "");
+        set("[data-sum-pickup-drive]", drive);
+      } else {
+        set("[data-pickup-name]", "Enter your delivery address");
+        set("[data-pickup-address]", "We'll find your nearest pickup point.");
+        set("[data-pickup-phone]", "");
+        set("[data-pickup-email]", "");
+        set("[data-pickup-drive]", "");
+        set("[data-pickup-near]", "");
+        set("[data-sum-pickup-name]", "—");
+        set("[data-sum-pickup-address]", "Enter your address to assign one");
+        set("[data-sum-pickup-phone]", "");
+        set("[data-sum-pickup-email]", "");
+        set("[data-sum-pickup-drive]", "");
+      }
     }
 
     // Contact echo in the summary
@@ -116,8 +181,58 @@ if (form) {
     set("[data-sum-emailphone]", [email, phone].filter(Boolean).join(" · ") || "—");
   };
 
-  form.addEventListener("change", render);
+  // Geocode the delivery address, find the nearest mechanic, estimate drive time.
+  const addrText = () => {
+    const street = $<HTMLInputElement>("[data-addr-street]")?.value.trim() || "";
+    const zip = $<HTMLInputElement>("[data-addr-zip]")?.value.trim() || "";
+    const city = $<HTMLInputElement>("[data-addr-city]")?.value.trim() || "";
+    return { street, zip, city, text: [street, zip, city].filter(Boolean).join(" ") };
+  };
+  const resolvePickup = async () => {
+    if (currentMethod() !== "pickup") return;
+    const { zip, city, text } = addrText();
+    if (!zip && !city) {
+      pickup = null;
+      render();
+      return;
+    }
+    const [list, coord] = await Promise.all([loadMechanics(), geocode(text)]);
+    if (!coord || !list.length) {
+      pickup = null;
+      render();
+      return;
+    }
+    let best: Mechanic | null = null;
+    let bestKm = Infinity;
+    for (const mech of list) {
+      const d = haversineKm(coord.lat, coord.lon, mech.la, mech.lo);
+      if (d < bestKm) {
+        bestKm = d;
+        best = mech;
+      }
+    }
+    if (best) {
+      const roadKm = bestKm * 1.3; // straight-line → rough road distance
+      pickup = { m: best, km: Math.max(1, Math.round(roadKm)), min: Math.max(3, Math.round((roadKm / 55) * 60)) };
+    }
+    render();
+  };
+
   form.addEventListener("input", render);
+  form.addEventListener("change", (e) => {
+    render();
+    const t = e.target as HTMLElement;
+    if (t instanceof HTMLInputElement && t.name === "method") resolvePickup();
+  });
+  // Re-find the nearest mechanic (debounced) as the address is typed.
+  let addrTimer = 0;
+  form.addEventListener("input", (e) => {
+    const t = e.target as HTMLElement;
+    if (t.matches("[data-addr-street],[data-addr-zip],[data-addr-city]")) {
+      window.clearTimeout(addrTimer);
+      addrTimer = window.setTimeout(resolvePickup, 550);
+    }
+  });
 
   /* --- invoice: reveal fields only when "same as delivery" is off --- */
   const invoiceSame = $<HTMLInputElement>("[data-invoice-same]");
@@ -127,41 +242,106 @@ if (form) {
   };
   invoiceSame?.addEventListener("change", syncInvoice);
 
-  /* --- address validation (placeholder — real service wired later) --- */
+  /* --- address validation via the Swiss federal GeoAdmin API (free, no key) --- */
   const validateBtn = $<HTMLButtonElement>("[data-validate]");
   const validateMsg = $("[data-validate-msg]");
-  validateBtn?.addEventListener("click", () => {
+  validateBtn?.addEventListener("click", async () => {
+    if (!validateMsg) return;
     const zip = $<HTMLInputElement>("[data-addr-zip]")?.value.trim() || "";
     const city = $<HTMLInputElement>("[data-addr-city]")?.value.trim() || "";
     const street = $<HTMLInputElement>("[data-addr-street]")?.value.trim() || "";
-    if (validateMsg) {
-      if (!street || !zip || !city) {
-        validateMsg.textContent = "Enter street, postcode and city first.";
-        validateMsg.dataset.state = "err";
-      } else if (!/^\d{4}$/.test(zip)) {
-        validateMsg.textContent = "Swiss postcodes are 4 digits.";
-        validateMsg.dataset.state = "err";
+    const setMsg = (t: string, s: "ok" | "err" | "") => {
+      validateMsg.textContent = t;
+      if (s) validateMsg.dataset.state = s;
+      else validateMsg.removeAttribute("data-state");
+    };
+    if (!street || !zip || !city) return setMsg("Enter street, postcode and city first.", "err");
+    if (!/^\d{4}$/.test(zip)) return setMsg("Swiss postcodes are 4 digits.", "err");
+    setMsg("Checking…", "");
+    try {
+      const q = encodeURIComponent(`${street} ${zip} ${city}`);
+      const url =
+        "https://api3.geo.admin.ch/rest/services/api/SearchServer" +
+        `?type=locations&origins=address&limit=1&sr=2056&searchText=${q}`;
+      const data = await (await fetch(url)).json();
+      const top = data.results?.[0];
+      if (top?.attrs?.label) {
+        setMsg("✓ " + top.attrs.label.replace(/<[^>]+>/g, ""), "ok");
+        resolvePickup(); // refresh the nearest pickup point for this address
       } else {
-        validateMsg.textContent = "Address looks valid (prototype check).";
-        validateMsg.dataset.state = "ok";
+        setMsg("Address not found — please check the details.", "err");
       }
+    } catch {
+      setMsg("Couldn't reach the address service — try again.", "err");
     }
   });
 
-  /* --- place order (prototype — confirms, charges nothing) --- */
-  form.addEventListener("submit", (e) => {
+  /* --- place order → Stripe Checkout (redirect). Falls back to a prototype
+         message until STRIPE_SECRET_KEY is set on the server. --- */
+  const placeLabel = $("[data-place-label]");
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    const email = $<HTMLInputElement>("#co-email")?.value.trim();
     const msg = $("[data-place-msg]");
     if (!msg) return;
-    if (!email) {
-      msg.textContent = "Add your email to continue.";
-      msg.dataset.state = "err";
-      return;
+    const setMsg = (t: string, s: "ok" | "err" | "") => {
+      msg.textContent = t;
+      if (s) msg.dataset.state = s;
+      else msg.removeAttribute("data-state");
+    };
+    const email = $<HTMLInputElement>("#co-email")?.value.trim();
+    if (!email) return setMsg("Add your email to continue.", "err");
+
+    const method = (form.querySelector<HTMLInputElement>('input[name="method"]:checked')?.value ||
+      "home") as "home" | "pickup";
+    if (placeLabel) placeLabel.textContent = "Starting secure payment…";
+    setMsg("", "");
+    try {
+      const r = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          product: build.product.id,
+          size: build.size,
+          colour: build.colour,
+          drivetrain: build.drivetrain,
+          pedals: build.pedals,
+          method,
+          email,
+        }),
+      });
+      const data = await r.json();
+      if (data.url) {
+        window.location.href = data.url; // → Stripe-hosted payment page
+        return;
+      }
+      if (data.configured === false) {
+        setMsg(
+          "Prototype — Stripe isn't connected yet, so no payment was taken. (Set STRIPE_SECRET_KEY to go live.)",
+          "ok"
+        );
+      } else {
+        setMsg(data.error || "Could not start payment. Please try again.", "err");
+      }
+    } catch {
+      setMsg("Network error starting payment. Please try again.", "err");
     }
-    msg.textContent = "Prototype — order captured, but no payment was taken and nothing was stored.";
-    msg.dataset.state = "ok";
+    if (placeLabel) placeLabel.textContent = "Place order";
   });
+
+  /* --- return from Stripe: show a status banner --- */
+  const status = new URLSearchParams(location.search).get("status");
+  if (status) {
+    const msg = $("[data-place-msg]");
+    if (msg) {
+      if (status === "success") {
+        msg.textContent = "Payment received — thank you! We'll email your order confirmation shortly.";
+        msg.dataset.state = "ok";
+      } else if (status === "cancelled") {
+        msg.textContent = "Payment cancelled — your build is still here whenever you're ready.";
+        msg.dataset.state = "err";
+      }
+    }
+  }
 
   syncInvoice();
   render();
