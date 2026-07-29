@@ -27,6 +27,10 @@ export function initConfigurator(): void {
   const productName = configForm.dataset.productName || "Prisma One";
   const fmt = (n: number) => "CHF " + n.toLocaleString("en-US").replace(/,/g, "'");
 
+  // "Reserve this build" → carry the current build into the checkout prototype.
+  const checkoutCta = document.querySelector<HTMLAnchorElement>("[data-checkout-cta]");
+  const productId = /terra/i.test(productName) ? "terra" : "aero";
+
   // Discount codes — add real promos here, e.g. { LAUNCH10: 0.1 } for 10% off.
   const CODES: Record<string, number> = {};
   let discountRate = 0;
@@ -58,6 +62,18 @@ export function initConfigurator(): void {
       totalEl.textContent = fmt(net);
     }
     if (summaryEl) summaryEl.textContent = items.map((i) => i.value).join(" · ");
+
+    // Update the checkout link with the current build (radio-based pages only).
+    if (checkoutCta) {
+      const byName = (n: string) =>
+        configForm.querySelector<HTMLInputElement>(`input[name="${n}"]:checked`)?.value || "";
+      const p = new URLSearchParams({ product: productId });
+      for (const dim of ["size", "colour", "drivetrain", "pedals"]) {
+        const v = byName(dim);
+        if (v) p.set(dim, v);
+      }
+      checkoutCta.href = "/checkout.html?" + p.toString();
+    }
 
     // Swap the left-column preview to the chosen colour.
     const colour = configForm.querySelector<HTMLInputElement>('input[name="colour"]:checked');

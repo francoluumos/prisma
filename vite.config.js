@@ -13,6 +13,7 @@ export default defineConfig({
         gravel: resolve(root, "gravel.html"),
         beta: resolve(root, "beta.html"),
         pickup: resolve(root, "pickup.html"),
+        checkout: resolve(root, "checkout.html"),
         network: resolve(root, "network.html"),
         terms: resolve(root, "terms.html"),
         cookies: resolve(root, "cookies.html"),

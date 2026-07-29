@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <title>Prisma — Checkout</title>
+    <meta name="description" content="Complete your Prisma order — delivery, details and payment." />
+    <meta name="theme-color" content="#ffffff" />
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <a class="skip-link" href="#co-main">Skip to content</a>
+
+    <!-- Minimal checkout header — logo only, fewer exits. -->
+    <header class="co-head">
+      <div class="co-head__inner shell">
+        <a class="wordmark" href="/index.html" aria-label="Prisma — home">
+          <span class="wordmark__glyph" aria-hidden="true">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none">
+              <path d="M12 3 L21 19 L3 19 Z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+            </svg>
+          </span>
+          <span class="wordmark__text">PRISMA</span>
+        </a>
+        <span class="co-head__step mono">Secure checkout</span>
+      </div>
+    </header>
+
+    <main id="co-main" class="co shell">
+      <span class="co-proto mono" role="note">Prototype — no payment is processed and no data is stored.</span>
+
+      <div class="co__grid">
+        <!-- ─────────── Left: checkout details ─────────── -->
+        <form class="co__form" data-checkout novalidate>
+
+          <!-- Contact / login -->
+          <section class="co-sec" aria-labelledby="co-contact">
+            <h2 class="co-sec__title" id="co-contact">Contact</h2>
+            <p class="co-sec__hint">We'll create your Prisma account from these — for order updates and sign-in.</p>
+            <div class="co-field">
+              <label for="co-email">Email</label>
+              <input id="co-email" type="email" autocomplete="email" placeholder="you@example.ch" required />
+            </div>
+            <div class="co-field">
+              <label for="co-phone">Phone</label>
+              <input id="co-phone" type="tel" autocomplete="tel" placeholder="+41 79 000 00 00" required />
+            </div>
+            <label class="co-check">
+              <input type="checkbox" data-newsletter checked />
+              <span>Email me Prisma news, launches and pickup-network updates.</span>
+            </label>
+          </section>
+
+          <!-- Delivery method -->
+          <section class="co-sec" aria-labelledby="co-method">
+            <h2 class="co-sec__title" id="co-method">Delivery method</h2>
+            <ul class="co-methods" data-methods>
+              <li>
+                <label class="co-method">
+                  <input type="radio" name="method" value="home" checked />
+                  <span class="co-method__body">
+                    <span class="co-method__name">Home delivery</span>
+                    <span class="co-method__meta mono">Shipped to your door · Switzerland</span>
+                  </span>
+                  <span class="co-method__fee" data-fee-home></span>
+                </label>
+              </li>
+              <li>
+                <label class="co-method">
+                  <input type="radio" name="method" value="pickup" />
+                  <span class="co-method__body">
+                    <span class="co-method__name">Pickup at a local partner</span>
+                    <span class="co-method__meta mono">Assembled &amp; checked, ready to collect</span>
+                  </span>
+                  <span class="co-method__fee" data-fee-pickup></span>
+                </label>
+              </li>
+            </ul>
+
+            <!-- Proposed mechanic (only for pickup) -->
+            <div class="co-pickup" data-pickup-panel hidden>
+              <p class="co-sec__hint">Your proposed pickup point <span data-pickup-near></span>. Final assignment after your address is verified.</p>
+              <div class="co-pickup__card">
+                <span class="co-pickup__name" data-pickup-name></span>
+                <span class="co-pickup__line" data-pickup-address></span>
+                <span class="co-pickup__line mono" data-pickup-phone></span>
+                <span class="co-pickup__line mono" data-pickup-email></span>
+                <span class="co-pill mono">Example partner</span>
+              </div>
+            </div>
+          </section>
+
+          <!-- Delivery address -->
+          <section class="co-sec" aria-labelledby="co-addr">
+            <h2 class="co-sec__title" id="co-addr">Delivery address</h2>
+            <div class="co-row">
+              <div class="co-field"><label for="co-first">First name</label><input id="co-first" autocomplete="given-name" /></div>
+              <div class="co-field"><label for="co-last">Last name</label><input id="co-last" autocomplete="family-name" /></div>
+            </div>
+            <div class="co-field"><label for="co-street">Street and number</label><input id="co-street" autocomplete="address-line1" data-addr-street /></div>
+            <div class="co-row">
+              <div class="co-field co-field--sm"><label for="co-zip">Postcode</label><input id="co-zip" autocomplete="postal-code" inputmode="numeric" data-addr-zip /></div>
+              <div class="co-field"><label for="co-city">City</label><input id="co-city" autocomplete="address-level2" data-addr-city /></div>
+            </div>
+            <div class="co-field">
+              <label for="co-country">Country</label>
+              <select id="co-country" autocomplete="country-name" data-addr-country>
+                <option value="CH" selected>Switzerland</option>
+                <option value="LI">Liechtenstein</option>
+              </select>
+            </div>
+            <div class="co-validate">
+              <button type="button" class="co-validate__btn mono" data-validate>Validate address</button>
+              <span class="co-validate__msg mono" data-validate-msg aria-live="polite"></span>
+            </div>
+          </section>
+
+          <!-- Invoice address -->
+          <section class="co-sec" aria-labelledby="co-invoice">
+            <h2 class="co-sec__title" id="co-invoice">Invoice address</h2>
+            <label class="co-check">
+              <input type="checkbox" data-invoice-same checked />
+              <span>Same as delivery address</span>
+            </label>
+            <div class="co-invoice-fields" data-invoice-fields hidden>
+              <div class="co-field"><label for="co-inv-name">Name / company</label><input id="co-inv-name" autocomplete="name" /></div>
+              <div class="co-field"><label for="co-inv-street">Street and number</label><input id="co-inv-street" autocomplete="address-line1" /></div>
+              <div class="co-row">
+                <div class="co-field co-field--sm"><label for="co-inv-zip">Postcode</label><input id="co-inv-zip" inputmode="numeric" /></div>
+                <div class="co-field"><label for="co-inv-city">City</label><input id="co-inv-city" /></div>
+              </div>
+            </div>
+          </section>
+
+          <!-- Payment (Stripe placeholder) -->
+          <section class="co-sec" aria-labelledby="co-pay">
+            <h2 class="co-sec__title" id="co-pay">Payment</h2>
+            <p class="co-sec__hint">All transactions are secure and encrypted.</p>
+            <div class="co-pay" aria-hidden="true">
+              <div class="co-pay__head">
+                <span class="mono">Card</span>
+                <span class="co-pay__brands mono">VISA · MC · AMEX</span>
+              </div>
+              <div class="co-pay__slot">
+                <span class="co-pay__placeholder mono">Stripe payment element mounts here</span>
+              </div>
+              <p class="co-pay__note mono">Stripe gateway — not yet connected in this prototype.</p>
+            </div>
+          </section>
+
+          <button type="submit" class="btn btn--solid co-place" data-place>
+            <span data-place-label>Place order</span>
+          </button>
+          <p class="co-place__msg mono" data-place-msg aria-live="polite"></p>
+          <p class="co-legal mono">By placing your order you agree to our <a href="/terms.html">Terms</a> and <a href="/cookies.html">Cookie Policy</a>.</p>
+        </form>
+
+        <!-- ─────────── Right: order summary ─────────── -->
+        <aside class="co__summary" aria-label="Order summary">
+          <div class="co-summary">
+            <div class="co-line">
+              <div class="co-line__thumb">
+                <img data-sum-thumb src="/img/prisma-aero-moon-silver-side.webp" width="120" height="90" alt="" />
+              </div>
+              <div class="co-line__body">
+                <span class="co-line__name" data-sum-name>Prisma One</span>
+                <span class="co-line__spec mono" data-sum-spec>Size 51 · Moon Silver · Wheeltop EDS-TX</span>
+              </div>
+              <span class="co-line__price" data-sum-bike>CHF 1'414</span>
+            </div>
+
+            <div class="co-summary__rows">
+              <div class="co-srow"><span>Bike subtotal</span><span data-sum-sub>CHF 1'414</span></div>
+              <div class="co-srow"><span data-sum-method-label>Home delivery</span><span data-sum-delivery>CHF 59</span></div>
+              <div class="co-srow co-srow--total"><span>Total</span><span data-sum-total>CHF 1'473</span></div>
+              <p class="co-srow__note mono">Incl. CHF 400 handling to our German warehouse. VAT included where applicable.</p>
+            </div>
+
+            <div class="co-summary__meta">
+              <div class="co-meta-row">
+                <span class="co-meta-k mono">Delivery time</span>
+                <span class="co-meta-v" data-sum-lead>Ships in 4–6 weeks</span>
+              </div>
+              <div class="co-meta-row" data-sum-contact>
+                <span class="co-meta-k mono">Order updates to</span>
+                <span class="co-meta-v" data-sum-emailphone>—</span>
+              </div>
+            </div>
+
+            <!-- Pickup point details (only for pickup) -->
+            <div class="co-summary__pickup" data-sum-pickup hidden>
+              <span class="co-meta-k mono">Pickup point</span>
+              <span class="co-meta-v" data-sum-pickup-name></span>
+              <span class="co-meta-sub" data-sum-pickup-address></span>
+              <span class="co-meta-sub mono" data-sum-pickup-phone></span>
+              <span class="co-meta-sub mono" data-sum-pickup-email></span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+
+    <script type="module" src="/src/checkout.ts"></script>
+  </body>
+</html>
