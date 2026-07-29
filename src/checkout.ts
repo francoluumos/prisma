@@ -20,7 +20,7 @@ interface Method {
 }
 const METHODS: Record<"home" | "pickup", Method> = {
   home: { label: "Home delivery", fee: 59, lead: "Ships in 4–6 weeks" },
-  pickup: { label: "Pickup at a local partner", fee: 0, lead: "Ready to collect in 5–7 weeks" },
+  pickup: { label: "Pickup at a local partner", fee: 149, lead: "Ready to collect in 5–7 weeks" },
 };
 
 /* --- real mechanics database (public/checkout-mechanics.json, from OSM).
@@ -175,10 +175,14 @@ if (form) {
       }
     }
 
-    // Contact echo in the summary
+    // Contact echo + update channel in the summary
     const email = $<HTMLInputElement>("#co-email")?.value.trim();
     const phone = $<HTMLInputElement>("#co-phone")?.value.trim();
+    const wantsWhatsApp = !!$<HTMLInputElement>("[data-whatsapp]")?.checked;
     set("[data-sum-emailphone]", [email, phone].filter(Boolean).join(" · ") || "—");
+    set("[data-sum-channel]", wantsWhatsApp && phone ? "Email + WhatsApp" : "Email");
+    // Opt-in needs a number to message — nudge, don't block.
+    set("[data-whatsapp-hint]", wantsWhatsApp && !phone ? " Add your phone number above." : "");
   };
 
   // Geocode the delivery address, find the nearest mechanic, estimate drive time.
@@ -293,6 +297,8 @@ if (form) {
 
     const method = (form.querySelector<HTMLInputElement>('input[name="method"]:checked')?.value ||
       "home") as "home" | "pickup";
+    const phone = $<HTMLInputElement>("#co-phone")?.value.trim() || "";
+    const whatsapp = !!$<HTMLInputElement>("[data-whatsapp]")?.checked && !!phone;
     if (placeLabel) placeLabel.textContent = "Starting secure payment…";
     setMsg("", "");
     try {
@@ -307,6 +313,8 @@ if (form) {
           pedals: build.pedals,
           method,
           email,
+          phone,
+          whatsapp,
         }),
       });
       const data = await r.json();

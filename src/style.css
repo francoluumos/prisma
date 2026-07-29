@@ -1655,3 +1655,4 @@ sub, small { font-size: 0.72em; }
 .co-summary__pickup .co-meta-v { text-align: left; font-family: var(--font-display); font-weight: 600; }
 .co-pickup__drive { color: var(--c-blue); font-weight: 500; font-size: 0.72rem; margin-top: 0.15rem; }
 .co-meta-drive { color: var(--c-blue) !important; font-weight: 500; }
+.co-check__hint { color: var(--c-orange); font-size: 0.78rem; }

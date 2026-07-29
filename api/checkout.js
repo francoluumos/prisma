@@ -23,7 +23,7 @@ const PRICES = {
     pedals: { "No pedals": 0 },
   },
 };
-const DELIVERY = { home: 59, pickup: 0 };
+const DELIVERY = { home: 59, pickup: 149 };
 
 export default async function handler(req, res) {
   if (req.method !== "POST") {
@@ -40,7 +40,7 @@ export default async function handler(req, res) {
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const { product = "aero", size = "", colour = "", drivetrain = "", pedals = "No pedals",
-      method = "home", email } = body;
+      method = "home", email, phone = "", whatsapp = false } = body;
 
     const cat = PRICES[product] || PRICES.aero;
     const bike = (cat.drivetrains[drivetrain] || 0) + (cat.pedals[pedals] || 0);
@@ -83,7 +83,13 @@ export default async function handler(req, res) {
       customer_email: email || undefined,
       success_url: `${origin}/checkout.html?status=success&session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${origin}/checkout.html?status=cancelled`,
-      metadata: { product, size, colour, drivetrain, pedals, method },
+      // update_channel tells fulfilment whether to message the customer on
+      // WhatsApp (via the official Cloud API) in addition to email.
+      metadata: {
+        product, size, colour, drivetrain, pedals, method,
+        phone: phone || "",
+        update_channel: whatsapp && phone ? "whatsapp+email" : "email",
+      },
     });
 
     res.status(200).json({ configured: true, url: session.url });
