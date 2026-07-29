@@ -92,6 +92,86 @@ function readBuild(): {
   return { product, size, colour, drivetrain, pedals, bikeTotal };
 }
 
+/* --- Address autocomplete: type a street, pick a real Swiss address from the
+       free GeoAdmin API, and auto-fill street / postcode / city. --- */
+interface AddrHit { street: string; zip: string; city: string; label: string; }
+function parseGeoLabel(label: string): AddrHit | null {
+  // "Bahnhofstrasse 1 <b>8001 Zürich</b>"
+  const m = label.match(/^(.*?)\s*<b>\s*(\d{4})\s+(.*?)\s*<\/b>/);
+  if (!m) return null;
+  return { street: m[1].trim(), zip: m[2], city: m[3].trim(), label: label.replace(/<[^>]+>/g, "") };
+}
+function attachAddressAutocomplete(
+  street: HTMLInputElement,
+  zip: HTMLInputElement,
+  city: HTMLInputElement
+): void {
+  const field = street.closest<HTMLElement>(".co-field");
+  if (!field) return;
+  field.style.position = "relative";
+  street.setAttribute("autocomplete", "off");
+  const list = document.createElement("ul");
+  list.className = "co-ac";
+  list.hidden = true;
+  field.appendChild(list);
+
+  let hits: AddrHit[] = [];
+  let active = -1;
+  let timer = 0;
+  const close = () => { list.hidden = true; active = -1; list.innerHTML = ""; };
+
+  const fill = (h: AddrHit) => {
+    street.value = h.street;
+    zip.value = h.zip;
+    city.value = h.city;
+    close();
+    for (const el of [street, zip, city]) el.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+
+  const render = () => {
+    list.innerHTML = "";
+    hits.forEach((h, i) => {
+      const li = document.createElement("li");
+      li.className = "co-ac__item" + (i === active ? " is-active" : "");
+      li.textContent = h.label;
+      li.addEventListener("mousedown", (e) => { e.preventDefault(); fill(h); });
+      list.appendChild(li);
+    });
+    list.hidden = hits.length === 0;
+  };
+
+  const search = async () => {
+    const q = street.value.trim();
+    if (q.length < 3) return close();
+    const text = [q, city.value.trim()].filter(Boolean).join(" ");
+    try {
+      const url =
+        "https://api3.geo.admin.ch/rest/services/api/SearchServer" +
+        `?type=locations&origins=address&limit=6&sr=4326&searchText=${encodeURIComponent(text)}`;
+      const d = await (await fetch(url)).json();
+      hits = (d.results || []).map((r: { attrs: { label: string } }) => parseGeoLabel(r.attrs.label))
+        .filter((h: AddrHit | null): h is AddrHit => !!h);
+      active = -1;
+      render();
+    } catch {
+      close();
+    }
+  };
+
+  street.addEventListener("input", () => {
+    window.clearTimeout(timer);
+    timer = window.setTimeout(search, 250);
+  });
+  street.addEventListener("keydown", (e) => {
+    if (list.hidden) return;
+    if (e.key === "ArrowDown") { e.preventDefault(); active = Math.min(active + 1, hits.length - 1); render(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); active = Math.max(active - 1, 0); render(); }
+    else if (e.key === "Enter" && active >= 0) { e.preventDefault(); fill(hits[active]); }
+    else if (e.key === "Escape") { close(); }
+  });
+  street.addEventListener("blur", () => window.setTimeout(close, 150));
+}
+
 const form = document.querySelector<HTMLFormElement>("[data-checkout]");
 if (form) {
   const build = readBuild();
@@ -237,6 +317,16 @@ if (form) {
       addrTimer = window.setTimeout(resolvePickup, 550);
     }
   });
+
+  /* --- street autocomplete for delivery + invoice addresses --- */
+  const dStreet = $<HTMLInputElement>("[data-addr-street]");
+  const dZip = $<HTMLInputElement>("[data-addr-zip]");
+  const dCity = $<HTMLInputElement>("[data-addr-city]");
+  if (dStreet && dZip && dCity) attachAddressAutocomplete(dStreet, dZip, dCity);
+  const iStreet = $<HTMLInputElement>("#co-inv-street");
+  const iZip = $<HTMLInputElement>("#co-inv-zip");
+  const iCity = $<HTMLInputElement>("#co-inv-city");
+  if (iStreet && iZip && iCity) attachAddressAutocomplete(iStreet, iZip, iCity);
 
   /* --- invoice: reveal fields only when "same as delivery" is off --- */
   const invoiceSame = $<HTMLInputElement>("[data-invoice-same]");

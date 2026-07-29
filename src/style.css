@@ -1656,3 +1656,15 @@ sub, small { font-size: 0.72em; }
 .co-pickup__drive { color: var(--c-blue); font-weight: 500; font-size: 0.72rem; margin-top: 0.15rem; }
 .co-meta-drive { color: var(--c-blue) !important; font-weight: 500; }
 .co-check__hint { color: var(--c-orange); font-size: 0.78rem; }
+
+/* Address autocomplete dropdown (GeoAdmin suggestions) */
+.co-ac {
+  position: absolute; top: 100%; left: 0; right: 0; z-index: 30; margin-top: 3px;
+  list-style: none; padding: 4px; max-height: 250px; overflow-y: auto;
+  background: var(--paper); border: 1px solid var(--hairline-ink); border-radius: 10px;
+  box-shadow: 0 12px 28px rgba(16, 18, 20, 0.12);
+}
+.co-ac__item {
+  padding: 0.5rem 0.6rem; border-radius: 7px; font-size: 0.85rem; color: var(--ink-body); cursor: pointer;
+}
+.co-ac__item:hover, .co-ac__item.is-active { background: var(--paper-sunk); color: var(--ink); }
