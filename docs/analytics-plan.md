@@ -1,6 +1,8 @@
 # Analytics & autonomous optimization — plan
 
-_Status: proposal / not yet implemented. Last updated 2026-07-28._
+_Status: **Phase 1 partly shipped (2026-07-30)** — consent gate, `track()` seam,
+funnel instrumentation and Vercel Web Analytics + Speed Insights are live.
+PostHog is **not** wired: Prisma has no PostHog project yet. See §11._
 
 How Prisma measures visitor behaviour and, over time, runs an **agent-proposes /
 human-approves** loop that improves the site from that data. Sibling to
@@ -275,3 +277,54 @@ The agent never ships to users unattended.
    funnel first? (Recommend: funnel first.)
 4. **Surveys on day one** (e.g. exit-intent "what stopped you?") or after the
    first data week? (Recommend: after, once we see where they drop.)
+
+---
+
+## 11. Implementation status (2026-07-30)
+
+**Shipped.** Phase 1 minus the PostHog half.
+
+- **Consent gate is real.** `src/cookie.ts` now dispatches `prisma-consent` on
+  choice (§3.1), so accepting boots analytics on *that* page instead of the next
+  navigation. `src/analytics.ts` boots on `getConsent() === "all"` at load and on
+  that event. Verified in the build output: the provider SDKs compile to their
+  own lazy chunks, so a visitor on "necessary only" never downloads them — not
+  just no events, no bytes.
+- **`track(event, props)` is provider-agnostic.** Call sites name the event; the
+  module decides the destination. Vercel Web Analytics custom events are wired
+  today; adding PostHog is a change to one file, not to any call site. Events
+  fired before the SDK finishes loading are queued (capped at 50) and replayed.
+- **Vercel Web Analytics + Speed Insights** (`@vercel/analytics`,
+  `@vercel/speed-insights`) — injected via `inject()` / `injectSpeedInsights()`,
+  not the React components in Vercel's Next.js-flavoured setup guide. Gated on
+  `import.meta.env.PROD` so preview deploys don't pollute the baseline. **Still
+  needs enabling in the Vercel dashboard** (Project → Analytics → Enable).
+- **Instrumented** per §4: `cta_click`, `configurator_viewed`,
+  `config_option_selected`, `config_total_changed` (debounced 600 ms),
+  `config_discount_applied` (hashed code, never raw), `config_build_complete`,
+  `reserve_cta_click`, `reserve_form_start`, `reserve_submit`,
+  `pickup_town_search`, `pickup_notify_click`.
+- **Beyond the original §4** — checkout didn't exist when this plan was written,
+  and it is now the actual end of the funnel: `checkout_viewed` and
+  `checkout_payment_started`. `checkout.html` has no cookie banner of its own
+  (it isn't a normal entry point), so analytics there runs only on consent given
+  upstream.
+- **No PII.** `reserve_submit` sends the email *domain* only; the discount code
+  is sent as a hash; no raw address, name or code leaves the browser.
+
+**Not done, and why.**
+
+- **PostHog (§2, §5).** Phase 0 is still open — the only project on the
+  connected MCP is `AirLuxo`, which is a different product, and the MCP cannot
+  create projects. Needs a PostHog EU project for Prisma + `VITE_POSTHOG_KEY` in
+  Vercel. Session replay, funnels, flags, experiments and surveys — and so the
+  §6 autonomous loop — all wait on that.
+- **Reverse proxy (§5 / §10.1).** Deliberately not added to `vercel.json`: the
+  two rewrites only exist to serve PostHog, so shipping them now would be dead
+  config. Add them together with the PostHog key.
+- **Studio/Beta events (§4.5)** — skipped for now, per §10.3's own
+  recommendation to do the purchase funnel first.
+- **Surveys** — per §10.4, after the first data week.
+
+**Next:** create the PostHog project, then the §5 wiring is roughly an hour —
+the call sites already exist.

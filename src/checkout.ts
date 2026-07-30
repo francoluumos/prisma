@@ -9,6 +9,7 @@
    ---------------------------------------------------------------- */
 import "./style.css";
 import { PRODUCTS, buildTotal, type Product, type ProductId } from "./data/products";
+import { initAnalyticsWithConsent, track } from "./analytics";
 
 const fmt = (n: number) => "CHF " + n.toLocaleString("en-US").replace(/,/g, "'");
 
@@ -176,6 +177,14 @@ const form = document.querySelector<HTMLFormElement>("[data-checkout]");
 if (form) {
   const build = readBuild();
   const colourSpec = build.product.colours.find((c) => c.name === build.colour);
+
+  // This page has no cookie banner of its own (it isn't an entry point in
+  // normal flow), so analytics only runs if consent was already given upstream.
+  initAnalyticsWithConsent();
+  track("checkout_viewed", {
+    model: build.product.id, total_chf: build.bikeTotal,
+    size: build.size, colour: build.colour, drivetrain: build.drivetrain,
+  });
 
   const $ = <T extends HTMLElement = HTMLElement>(sel: string) =>
     document.querySelector<T>(sel);
@@ -422,6 +431,15 @@ if (form) {
             lon: pickup.m.lo,
           }
         : null;
+
+    // The last click before money changes hands — the end of the funnel.
+    track("checkout_payment_started", {
+      model: build.product.id,
+      method,
+      total_chf: build.bikeTotal + (method === "pickup" ? 149 : 59),
+      has_pickup_partner: !!pickupPartner,
+      whatsapp_opt_in: whatsapp,
+    });
 
     if (placeLabel) placeLabel.textContent = "Starting secure payment…";
     setMsg("", "");

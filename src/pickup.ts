@@ -1,5 +1,6 @@
 import "./style.css";
 import { initSite } from "./site";
+import { track } from "./analytics";
 import coverage from "./pickup-coverage.json";
 
 /* ------------------------------------------------------------------
@@ -142,7 +143,10 @@ if (canvas) {
     if (!t && q) {
       for (const [nm, town] of townByName) { if (nm.startsWith(q)) { t = town; break; } }
     }
-    if (!t) { res.classList.remove("on"); you = null; render(); return; }
+    if (!t) {
+      track("pickup_town_search", { town: q, found: false });
+      res.classList.remove("on"); you = null; render(); return;
+    }
     you = [t[1], t[2]];
     let best = 1e9;
     for (const p of pts) { const d = hav(t[2], t[1], p[1], p[0]); if (d < best) best = d; }
@@ -154,6 +158,11 @@ if (canvas) {
     if (title) title.textContent = "Nearest planned pickup from " + t[0];
     if (sub) sub.textContent = "about a " + mins + "-minute drive";
     res.classList.add("on");
+    // How far the nearest planned point actually is — the number that decides
+    // where the network needs to grow next.
+    track("pickup_town_search", {
+      town: t[0], found: true, nearest_km: Math.round(best), drive_min: mins,
+    });
     render();
   }
 
@@ -167,6 +176,7 @@ if (canvas) {
     e.preventDefault();
     const email = document.querySelector<HTMLInputElement>("#pk-email")?.value.trim();
     if (!email) return;
+    track("pickup_notify_click", {});
     // No mailing backend yet — hand off to the visitor's mail client.
     const body = encodeURIComponent("Please tell me when a pickup point opens near me. " + email);
     window.location.href =

@@ -11,6 +11,8 @@
    anything here.
    ---------------------------------------------------------------- */
 
+import { track } from "./analytics";
+
 /** Pick a shift unit + colour, update price + summary, swap the colour preview.
  *  Prices are base + CHF 400 warehouse fee + CHF 59 Swiss delivery (data-price). */
 export function initConfigurator(): void {
@@ -88,6 +90,74 @@ export function initConfigurator(): void {
   };
   configForm.addEventListener("change", update);
 
+  /* --- funnel instrumentation (docs/analytics-plan.md §4.2) --------------
+     The buying decision happens here, so this is the highest-value signal on
+     the site — and `config_build_complete` is the micro-conversion we can
+     optimize on long before there are enough real sales to test against. */
+  const byName = (n: string) =>
+    configForm.querySelector<HTMLInputElement>(`input[name="${n}"]:checked`)?.value || "";
+  const currentTotal = () =>
+    Number((totalEl?.textContent || "").replace(/[^\d]/g, "")) || 0;
+
+  // Section reached — once per page.
+  if ("IntersectionObserver" in window) {
+    const seen = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          track("configurator_viewed", { model: productId });
+          seen.disconnect();
+        }
+      },
+      { threshold: 0.3 }
+    );
+    seen.observe(configForm);
+  }
+
+  let totalTimer = 0;
+  let buildCompleteSent = false;
+  configForm.addEventListener("change", (e) => {
+    const t = e.target as HTMLInputElement | HTMLSelectElement;
+    const dimension = t.name || t.getAttribute("data-variant-select") || "unknown";
+    if (dimension === "finish") return; // studio attribute, not a checkout choice
+
+    const value = t instanceof HTMLSelectElement ? t.value : t.value;
+    const priceDelta =
+      t instanceof HTMLSelectElement
+        ? Number(t.selectedOptions[0]?.dataset.price || 0)
+        : Number(t.dataset.price || 0);
+    track("config_option_selected", { dimension, value, price_delta: priceDelta });
+
+    // Debounced so a burst of clicks reports the settled price, not each step.
+    window.clearTimeout(totalTimer);
+    totalTimer = window.setTimeout(() => {
+      track("config_total_changed", { total_chf: currentTotal(), model: productId });
+
+      // All four dimensions chosen = a complete build. Fire once per page.
+      const dims = { size: byName("size"), colour: byName("colour"),
+                     drivetrain: byName("drivetrain"), pedals: byName("pedals") };
+      const required: Array<keyof typeof dims> =
+        productId === "terra" ? ["size", "colour", "drivetrain"]
+                              : ["size", "colour", "drivetrain", "pedals"];
+      if (!buildCompleteSent && required.every((d) => dims[d])) {
+        buildCompleteSent = true;
+        track("config_build_complete", { ...dims, model: productId, total_chf: currentTotal() });
+      }
+    }, 600);
+  });
+
+  checkoutCta?.addEventListener("click", () => {
+    track("reserve_cta_click", {
+      source: "config_bar",
+      model: productId,
+      size: byName("size"),
+      colour: byName("colour"),
+      drivetrain: byName("drivetrain"),
+      pedals: byName("pedals"),
+      total_chf: currentTotal(),
+    });
+  });
+
   // Discount code: apply on click or Enter; recalculates the total.
   const discountInput = document.querySelector<HTMLInputElement>("[data-discount-input]");
   const discountApply = document.querySelector<HTMLButtonElement>("[data-discount-apply]");
@@ -103,6 +173,12 @@ export function initConfigurator(): void {
     } else {
       discountRate = 0;
       if (discountMsg) { discountMsg.textContent = "Code not recognised"; discountMsg.dataset.state = "err"; }
+    }
+    // Which codes are circulating matters; the code itself is never sent.
+    if (code) {
+      let h = 5381;
+      for (let i = 0; i < code.length; i++) h = ((h << 5) + h + code.charCodeAt(i)) >>> 0;
+      track("config_discount_applied", { valid: code in CODES, code_hash: h.toString(36) });
     }
     update();
   };

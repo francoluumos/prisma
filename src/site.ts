@@ -8,6 +8,7 @@
    ---------------------------------------------------------------- */
 
 import { initCookieConsent } from "./cookie";
+import { initAnalyticsWithConsent, track } from "./analytics";
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(min, v));
@@ -15,8 +16,25 @@ const clamp = (v: number, min: number, max: number) => Math.min(max, Math.max(mi
 export function initSite(): void {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Cookie consent banner (shown until the visitor chooses). */
+  /* Cookie consent banner (shown until the visitor chooses), then analytics —
+     which stays dormant unless that choice is "all". */
   initCookieConsent();
+  initAnalyticsWithConsent();
+
+  /* Primary CTAs: what gets clicked, and from where. */
+  document.querySelectorAll<HTMLElement>(".btn--solid, .btn--ghost").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      track("cta_click", {
+        label: (btn.textContent || "").trim().slice(0, 60),
+        location: btn.closest("[data-nav]") ? "nav"
+          : btn.closest(".hero") ? "hero"
+          : btn.closest(".configure__bar") ? "config_bar"
+          : btn.closest("footer") ? "footer"
+          : "body",
+        href: btn.getAttribute("href"),
+      });
+    });
+  });
 
   /* Nav: hairline + denser glass once scrolled; on mobile, auto-hide on
      scroll-down and reveal on scroll-up (the transform is gated to mobile in
@@ -150,21 +168,33 @@ export function initSite(): void {
     if (field?.classList.contains("is-invalid")) setState("idle");
   });
 
+  // Form-start fires once per page: the intent, not the number of refocuses.
+  let reserveStarted = false;
+  input?.addEventListener("focus", () => {
+    if (reserveStarted) return;
+    reserveStarted = true;
+    track("reserve_form_start", { location: "reserve_section" });
+  });
+
   form?.addEventListener("submit", (e) => {
     e.preventDefault();
     if (!input || !submit || !submitLabel) return;
 
     const value = input.value.trim();
     if (!value) {
+      track("reserve_submit", { result: "invalid", reason: "empty" });
       setState("invalid", "Enter your email to reserve a piece.");
       input.focus();
       return;
     }
     if (!EMAIL_RE.test(value)) {
+      track("reserve_submit", { result: "invalid", reason: "malformed" });
       setState("invalid", "That doesn't look like a valid email.");
       input.focus();
       return;
     }
+    // Never the address itself — the domain is enough to spot B2B interest.
+    track("reserve_submit", { result: "valid", email_domain: value.split("@")[1] || "" });
 
     // submitting
     setState("idle", "");

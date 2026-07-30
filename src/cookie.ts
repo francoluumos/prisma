@@ -40,6 +40,10 @@ export function initCookieConsent(): void {
     } catch {
       /* storage blocked — banner still dismisses for the session */
     }
+    // Announce the choice so analytics can boot (or stay off) on THIS page —
+    // without it, a visitor who accepts is only measured from the next
+    // navigation onwards. See docs/analytics-plan.md §3.
+    window.dispatchEvent(new CustomEvent("prisma-consent", { detail: choice }));
     banner.classList.remove("is-visible");
     banner.addEventListener("transitionend", () => banner.remove(), { once: true });
     // Fallback removal if no transition fires (reduced motion).
