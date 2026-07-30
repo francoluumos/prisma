@@ -24,6 +24,7 @@ let booted = false;
 /** Events fired before the provider finished loading, replayed on boot. */
 const queue: Array<{ event: string; props?: Props }> = [];
 let vercelTrack: ((event: string, props?: Props) => void) | null = null;
+let posthogCapture: ((event: string, props?: Props) => void) | null = null;
 
 const consented = () => getConsent() === "all";
 
@@ -38,9 +39,38 @@ export function track(event: string, props?: Props): void {
   }
   try {
     vercelTrack?.(event, props);
+    posthogCapture?.(event, props);
   } catch {
     /* never let analytics break the page */
   }
+}
+
+/** PostHog — product analytics, session replay, flags, experiments.
+ *
+ *  Stays entirely absent until VITE_POSTHOG_KEY is set, so the site behaves
+ *  identically with or without it. Requests go to the first-party `/ingest`
+ *  proxy (see vercel.json) rather than eu.i.posthog.com directly, which stops
+ *  ad-blockers from silently eating a chunk of the data. */
+async function bootPostHog(): Promise<void> {
+  const key = import.meta.env.VITE_POSTHOG_KEY;
+  if (!key) return;
+
+  const { default: posthog } = await import("posthog-js");
+  posthog.init(key, {
+    api_host: import.meta.env.VITE_POSTHOG_HOST || "/ingest",
+    ui_host: "https://eu.posthog.com",
+    // We never identify visitors, so profiles for everyone would be pure cost.
+    person_profiles: "identified_only",
+    capture_pageview: true,
+    capture_performance: { web_vitals: true },
+    session_recording: {
+      // Replay is for seeing WHERE people struggle, never WHAT they typed —
+      // this page collects emails, addresses and discount codes.
+      maskAllInputs: true,
+      maskTextSelector: "*",
+    },
+  });
+  posthogCapture = (event, props) => posthog.capture(event, props ?? undefined);
 }
 
 /** Load the providers. Idempotent; safe to call from every page entry point. */
@@ -61,6 +91,8 @@ export function initAnalytics(): void {
       inject();               // page views + custom events
       injectSpeedInsights();  // real-user Web Vitals per deploy
       vercelTrack = vt as (event: string, props?: Props) => void;
+
+      await bootPostHog();
 
       for (const q of queue) {
         try {

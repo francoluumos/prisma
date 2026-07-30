@@ -1,8 +1,8 @@
 # Analytics & autonomous optimization — plan
 
-_Status: **Phase 1 partly shipped (2026-07-30)** — consent gate, `track()` seam,
-funnel instrumentation and Vercel Web Analytics + Speed Insights are live.
-PostHog is **not** wired: Prisma has no PostHog project yet. See §11._
+_Status: **Phase 1 shipped (2026-07-30)** — consent gate, `track()` seam, funnel
+instrumentation, Vercel Web Analytics + Speed Insights, and the PostHog wiring
+(dormant until `VITE_POSTHOG_KEY` is set). See §11._
 
 How Prisma measures visitor behaviour and, over time, runs an **agent-proposes /
 human-approves** loop that improves the site from that data. Sibling to
@@ -312,16 +312,31 @@ The agent never ships to users unattended.
 - **No PII.** `reserve_submit` sends the email *domain* only; the discount code
   is sent as a hash; no raw address, name or code leaves the browser.
 
-**Not done, and why.**
+**PostHog wiring — code done, waiting on the key.** Project `237148` exists on
+EU cloud. `bootPostHog()` in `src/analytics.ts` loads `posthog-js` with
+`person_profiles: "identified_only"`, `capture_performance.web_vitals`, and
+replay masking (`maskAllInputs`, `maskTextSelector: "*"`) — replay shows where
+people struggle, never what they typed, which matters on a page that collects
+emails, addresses and discount codes.
 
-- **PostHog (§2, §5).** Phase 0 is still open — the only project on the
-  connected MCP is `AirLuxo`, which is a different product, and the MCP cannot
-  create projects. Needs a PostHog EU project for Prisma + `VITE_POSTHOG_KEY` in
-  Vercel. Session replay, funnels, flags, experiments and surveys — and so the
-  §6 autonomous loop — all wait on that.
-- **Reverse proxy (§5 / §10.1).** Deliberately not added to `vercel.json`: the
-  two rewrites only exist to serve PostHog, so shipping them now would be dead
-  config. Add them together with the PostHog key.
+Three things worth knowing about it:
+
+1. **`VITE_POSTHOG_KEY` is read at BUILD time**, not runtime — that is how Vite
+   env vars work. Setting it in Vercel requires a redeploy to take effect.
+2. **Without the key, `posthog-js` is not in the bundle at all.** Vite inlines
+   the unset var and Rollup drops the unreachable `import()`. Verified in the
+   build output: no key → no posthog chunk; key set → a ~231 KB lazy chunk that
+   is only fetched after consent. So the cost of "wired but not enabled" is
+   literally zero bytes.
+3. **The reverse proxy is live** (`/ingest/*` → `eu.i.posthog.com`, `/ingest/static/*`
+   → `eu-assets.i.posthog.com` in `vercel.json`), and `middleware.ts` now
+   excludes `/ingest/` from the site-wide Basic-Auth gate — analytics beacons
+   carry no Basic-Auth header, so without that exclusion every event would have
+   401'd while the site stays password-protected.
+
+Settings in §2.3 (autocapture, replay on, person profiles, web vitals) still
+need setting in the PostHog UI — the connected MCP key is scoped to a different
+org and returns 404 for project `237148`, so it cannot configure them.
 - **Studio/Beta events (§4.5)** — skipped for now, per §10.3's own
   recommendation to do the purchase funnel first.
 - **Surveys** — per §10.4, after the first data week.
