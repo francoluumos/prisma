@@ -1,6 +1,7 @@
 # Commerce backend — decision doc
 
-_Status: **DECIDED — Supabase-first, migration-ready.** Last updated 2026-07-29._
+_Status: **DECIDED — Supabase-first, migration-ready. Schema + order capture
+built (2026-07-30).** Last updated 2026-07-30. See §11 for what exists._
 
 > **Decision (2026-07-29):** build the commerce layer custom on **Supabase +
 > Stripe (Tax + Invoicing)** now, following the six migration-cheap principles
@@ -272,3 +273,68 @@ Until then, custom Supabase is the leaner, cheaper, faster choice.
    (revisit Odoo sooner)?
 5. **Accounting today** — which tool does the fiduciary use (Bexio/Abacus/…)? It
    shapes the export seam.
+
+
+---
+
+## 11. Implementation status (2026-07-30)
+
+Roadmap step 1 (**Capture**) is built. Supabase project **`prisma`**
+(`lpqhsiuspsbubzrqjkvi`, eu-west-1, org Luumos).
+
+**Schema — Odoo's own table/column names, not a lookalike.** Migrations live in
+`supabase/migrations/`. This is principle 3 taken literally: the later import is
+a field map, not a domain rewrite.
+
+| Table | Odoo model | Holds |
+| --- | --- | --- |
+| `res_partner` | `res.partner` | customers, their delivery/invoice addresses (child rows via `parent_id` + `type`), **and** pickup partners — exactly how Odoo models all three |
+| `product_product` | `product.product` | the 2 bikes + 2 delivery services, keyed by `default_code` (SKU) |
+| `delivery_carrier` | `delivery.carrier` | home CHF 59 / pickup CHF 149, matched by `x_code` |
+| `sale_order` | `sale.order` | `state` draft→sale→done→cancel, `amount_untaxed/tax/total`, `partner_invoice_id`, `partner_shipping_id`, `carrier_id` |
+| `sale_order_line` | `sale.order.line` | one product line + one delivery line; the chosen build sits in `x_config` jsonb (→ product attributes / BOM in Odoo) |
+| `payment_transaction` | `payment.transaction` | Stripe session id + payment intent (principle 5 — reconciliation survives the move) |
+| `ir_model_data` | `ir.model.data` | a stable external ID per row (principle 2 — imports are idempotent) |
+
+Non-Odoo fields carry Odoo's `x_` custom-field prefix, so they map onto Studio
+fields rather than needing invention: `x_fulfilment_state`, `x_pickup_partner_id`,
+`x_update_channel`, `x_wa_opt_in`, `x_is_pickup_partner`, `x_commission_pct`.
+
+Order numbers continue the offline convention — `PRI00002` onwards
+(`sale_order_name_seq`; `PRI00001` is the existing manual order in `orders/`).
+
+**The one order sink (principle 1).** Every order write goes through
+`public.create_order(jsonb)` — a single transaction that upserts the customer,
+finds-or-creates both addresses, resolves carrier + pickup partner, and writes
+order, lines and payment. It is **idempotent on the Stripe Checkout Session id**,
+so Stripe's webhook retries can't duplicate an order. `api/_lib/orders.js`
+wraps it; nothing else in the codebase inserts into `sale_order`. Moving to Odoo
+means rewriting that one file.
+
+Flow: `src/checkout.ts` → `api/checkout.js` (re-prices server-side, puts contact,
+both addresses and the proposed pickup partner in Stripe metadata) → Stripe →
+`api/stripe-webhook.js` (re-reads the session with line items, so the order
+records what Stripe *actually charged*) → `createOrder()`.
+
+**Security.** RLS on every table, deny-by-default. `create_order` is
+`EXECUTE`-granted to `service_role` only — verified: `anon` gets
+`42501 permission denied`, and reads back 0 rows across all tables while an order
+exists. Signed-in customers get self-service SELECT policies (own partner, own
+addresses, own orders/lines/payments) ready for roadmap step 2; the catalog and
+*confirmed* pickup partners are readable publicly. `ir_model_data` intentionally
+has RLS on and no policies — internal plumbing, service role only.
+
+**Env vars** the webhook needs on Vercel (alongside the existing Stripe pair):
+
+| Var | Where | Purpose |
+| --- | --- | --- |
+| `SUPABASE_URL` | Vercel env | `https://lpqhsiuspsbubzrqjkvi.supabase.co` |
+| `SUPABASE_SERVICE_ROLE_KEY` | Vercel env (secret) | the only key allowed to call `create_order` — server-side only, never shipped to the browser |
+
+Without them the webhook logs a warning and still 200s, so nothing breaks in
+preview; with them, paid orders start accruing.
+
+**Not built yet** (deliberately — §6's "accidental ERP" risks): Stripe Tax is
+off, so `amount_tax` records whatever Stripe reports (0 today). No invoicing, no
+inventory, no admin UI, no confirmation email / WhatsApp / partner notification
+— the webhook has one `TODO` marking that seam. Next up are roadmap steps 2–4.

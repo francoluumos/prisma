@@ -25,6 +25,16 @@ const PRICES = {
 };
 const DELIVERY = { home: 59, pickup: 149 };
 
+/** Stripe metadata is string-valued; drop blanks so the map stays readable. */
+function meta(entries) {
+  const out = {};
+  for (const [k, v] of Object.entries(entries)) {
+    const s = v === null || v === undefined ? "" : String(v).trim();
+    if (s) out[k] = s.slice(0, 500);
+  }
+  return out;
+}
+
 export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.status(405).json({ error: "Method not allowed" });
@@ -40,7 +50,10 @@ export default async function handler(req, res) {
   try {
     const body = typeof req.body === "string" ? JSON.parse(req.body) : req.body || {};
     const { product = "aero", size = "", colour = "", drivetrain = "", pedals = "No pedals",
-      method = "home", email, phone = "", whatsapp = false } = body;
+      method = "home", email, phone = "", whatsapp = false, newsletter = false,
+      // Contact + addresses collected by the checkout form; carried through
+      // Stripe metadata so the webhook can write a complete order.
+      first = "", last = "", address = {}, invoiceAddress = null, pickup = null } = body;
 
     const cat = PRICES[product] || PRICES.aero;
     const bike = (cat.drivetrains[drivetrain] || 0) + (cat.pedals[pedals] || 0);
@@ -85,11 +98,24 @@ export default async function handler(req, res) {
       cancel_url: `${origin}/checkout.html?status=cancelled`,
       // update_channel tells fulfilment whether to message the customer on
       // WhatsApp (via the official Cloud API) in addition to email.
-      metadata: {
+      // The `s_` / `i_` / `pu_` keys are the delivery address, invoice address
+      // and proposed pickup partner — api/stripe-webhook.js turns them back
+      // into res_partner records.
+      metadata: meta({
         product, size, colour, drivetrain, pedals, method,
-        phone: phone || "",
+        phone,
         update_channel: whatsapp && phone ? "whatsapp+email" : "email",
-      },
+        newsletter: newsletter ? "1" : "",
+        first, last,
+        s_street: address.street, s_zip: address.zip,
+        s_city: address.city, s_country: address.country,
+        i_name: invoiceAddress?.name, i_street: invoiceAddress?.street,
+        i_zip: invoiceAddress?.zip, i_city: invoiceAddress?.city,
+        i_country: invoiceAddress?.country,
+        pu_name: pickup?.name, pu_street: pickup?.street,
+        pu_zip: pickup?.zip, pu_city: pickup?.city,
+        pu_lat: pickup?.lat, pu_lon: pickup?.lon,
+      }),
     });
 
     res.status(200).json({ configured: true, url: session.url });

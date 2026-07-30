@@ -389,6 +389,40 @@ if (form) {
       "home") as "home" | "pickup";
     const phone = $<HTMLInputElement>("#co-phone")?.value.trim() || "";
     const whatsapp = !!$<HTMLInputElement>("[data-whatsapp]")?.checked && !!phone;
+    const newsletter = !!$<HTMLInputElement>("[data-newsletter]")?.checked;
+
+    // Contact + addresses ride along in the Stripe session's metadata so the
+    // webhook can write a complete order (customer, delivery and invoice
+    // addresses, assigned pickup partner) without a second round-trip.
+    const val = (sel: string) => $<HTMLInputElement>(sel)?.value.trim() || "";
+    const address = {
+      street: val("#co-street"),
+      zip: val("#co-zip"),
+      city: val("#co-city"),
+      country: $<HTMLSelectElement>("#co-country")?.value.trim() || "CH",
+    };
+    const invoiceSameNow = $<HTMLInputElement>("[data-invoice-same]")?.checked !== false;
+    const invoiceAddress = invoiceSameNow
+      ? null
+      : {
+          name: val("#co-inv-name"),
+          street: val("#co-inv-street"),
+          zip: val("#co-inv-zip"),
+          city: val("#co-inv-city"),
+          country: "CH",
+        };
+    const pickupPartner =
+      method === "pickup" && pickup
+        ? {
+            name: pickup.m.n,
+            street: pickup.m.st || "",
+            zip: pickup.m.z || "",
+            city: pickup.m.c || "",
+            lat: pickup.m.la,
+            lon: pickup.m.lo,
+          }
+        : null;
+
     if (placeLabel) placeLabel.textContent = "Starting secure payment…";
     setMsg("", "");
     try {
@@ -405,6 +439,12 @@ if (form) {
           email,
           phone,
           whatsapp,
+          newsletter,
+          first: val("#co-first"),
+          last: val("#co-last"),
+          address,
+          invoiceAddress,
+          pickup: pickupPartner,
         }),
       });
       const data = await r.json();
