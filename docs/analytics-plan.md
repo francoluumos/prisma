@@ -334,12 +334,42 @@ Three things worth knowing about it:
    carry no Basic-Auth header, so without that exclusion every event would have
    401'd while the site stays password-protected.
 
-Settings in §2.3 (autocapture, replay on, person profiles, web vitals) still
-need setting in the PostHog UI — the connected MCP key is scoped to a different
-org and returns 404 for project `237148`, so it cannot configure them.
+**Project settings (§2.3) — done.** The MCP is now authenticated against the
+right org, so project `237148` is readable and writable from here. Verified /
+set on 2026-07-31:
+
+| Setting | Value | Where it lives |
+| --- | --- | --- |
+| Project name | `prisma` (was "Default project") | PostHog |
+| Timezone | `Europe/Zurich` (was UTC) | PostHog |
+| Reporting currency | `CHF` (was USD) | PostHog |
+| Autocapture | on (`autocapture_opt_out: false`) | PostHog |
+| Session replay | on, 30-day retention | PostHog |
+| Web vitals | on | PostHog |
+| Heatmaps / console logs | on | PostHog |
+| IP anonymisation | on | PostHog |
+| Person profiles | `identified_only` | SDK, `src/analytics.ts` |
+| Replay masking | `maskAllInputs`, `maskTextSelector: "*"` | SDK, `src/analytics.ts` |
+
+Masking and person-profile mode are SDK-side by design — they travel with the
+code rather than with a dashboard toggle someone can flip without a diff.
+
+**The one remaining blocker is the key.** `ingested_event` is still `false`:
+the project has never received an event. To light it up, set in Vercel →
+Project → Settings → Environment Variables (Production):
+
+    VITE_POSTHOG_KEY = phc_BkFwnyx6KTsKBeeXZd3UknZbaU5JYQhZXArWWQsHvdWb
+
+then **redeploy** — per point 1 above, Vite bakes the value in at build time, so
+adding the variable alone changes nothing. `VITE_POSTHOG_HOST` stays unset; the
+default `/ingest` proxy is what we want.
+
+Not done yet, deliberately:
 - **Studio/Beta events (§4.5)** — skipped for now, per §10.3's own
   recommendation to do the purchase funnel first.
 - **Surveys** — per §10.4, after the first data week.
+- **Funnels/dashboards (§4.6)** — worth building against real events rather
+  than an empty project, so: after the first traffic lands.
 
-**Next:** create the PostHog project, then the §5 wiring is roughly an hour —
-the call sites already exist.
+**Next:** set the key, redeploy, confirm the first event arrives, then build the
+§4.6 funnels.
