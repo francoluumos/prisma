@@ -119,14 +119,28 @@ function attachAddressAutocomplete(
   let hits: AddrHit[] = [];
   let active = -1;
   let timer = 0;
-  const close = () => { list.hidden = true; active = -1; list.innerHTML = ""; };
+  let seq = 0;      // ignore responses from searches superseded by a pick/close
+  let filling = false; // true while fill() replays input events downstream
+  const close = () => {
+    // A pending debounce or in-flight fetch would re-open the list moments
+    // after it closes — cancel both, so "closed" stays closed.
+    window.clearTimeout(timer);
+    seq++;
+    list.hidden = true;
+    active = -1;
+    list.innerHTML = "";
+  };
 
   const fill = (h: AddrHit) => {
     street.value = h.street;
     zip.value = h.zip;
     city.value = h.city;
     close();
+    // These notify the summary / nearest-mechanic logic; our own input handler
+    // must not treat them as the user typing, or it re-opens the dropdown.
+    filling = true;
     for (const el of [street, zip, city]) el.dispatchEvent(new Event("input", { bubbles: true }));
+    filling = false;
   };
 
   const render = () => {
@@ -145,21 +159,24 @@ function attachAddressAutocomplete(
     const q = street.value.trim();
     if (q.length < 3) return close();
     const text = [q, city.value.trim()].filter(Boolean).join(" ");
+    const mine = ++seq;
     try {
       const url =
         "https://api3.geo.admin.ch/rest/services/api/SearchServer" +
         `?type=locations&origins=address&limit=6&sr=4326&searchText=${encodeURIComponent(text)}`;
       const d = await (await fetch(url)).json();
+      if (mine !== seq) return; // a pick or a newer keystroke won — drop this
       hits = (d.results || []).map((r: { attrs: { label: string } }) => parseGeoLabel(r.attrs.label))
         .filter((h: AddrHit | null): h is AddrHit => !!h);
       active = -1;
       render();
     } catch {
-      close();
+      if (mine === seq) close();
     }
   };
 
   street.addEventListener("input", () => {
+    if (filling) return;
     window.clearTimeout(timer);
     timer = window.setTimeout(search, 250);
   });
