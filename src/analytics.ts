@@ -20,7 +20,8 @@ import { getConsent } from "./cookie";
 
 type Props = Record<string, string | number | boolean | null>;
 
-let booted = false;
+let booted = false;   // providers loaded and ready to receive
+let booting = false;  // load in flight — keeps init idempotent without dropping events
 /** Events fired before the provider finished loading, replayed on boot. */
 const queue: Array<{ event: string; props?: Props }> = [];
 let vercelTrack: ((event: string, props?: Props) => void) | null = null;
@@ -75,8 +76,8 @@ async function bootPostHog(): Promise<void> {
 
 /** Load the providers. Idempotent; safe to call from every page entry point. */
 export function initAnalytics(): void {
-  if (booted || !consented()) return;
-  booted = true;
+  if (booting || booted || !consented()) return;
+  booting = true;
 
   // Preview/dev traffic would pollute the baseline, and there is no Vercel
   // Analytics endpoint outside a deployment anyway.
@@ -94,9 +95,16 @@ export function initAnalytics(): void {
 
       await bootPostHog();
 
+      // Only now can track() reach a provider. Flipping this earlier would send
+      // every event fired during the dynamic import into a null provider —
+      // silently losing the ones at the top of the funnel (checkout_viewed
+      // fires on the line after init).
+      booted = true;
+
       for (const q of queue) {
         try {
-          vercelTrack(q.event, q.props);
+          vercelTrack?.(q.event, q.props);
+          posthogCapture?.(q.event, q.props);
         } catch {
           /* ignore a single bad event */
         }
@@ -104,6 +112,7 @@ export function initAnalytics(): void {
       queue.length = 0;
     } catch {
       // Blocked by an extension, offline, CDN hiccup — the site carries on.
+      booting = false;
       booted = false;
     }
   })();
