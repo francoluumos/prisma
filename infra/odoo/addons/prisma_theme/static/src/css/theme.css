@@ -1,0 +1,144 @@
+/* Prisma / Luumos backend theme.
+ *
+ * Palette straight from luumos-agency/DESIGN.md. One accent only — the
+ * "Rationed Spark Rule" there caps the brand on ~10% of a screen, so the blue
+ * is reserved for primary actions, active state and links. Everything else is
+ * carried by ink-on-light and space, which is also why the navbar loses its
+ * fill rather than gaining a blue one.
+ *
+ * Plain CSS on purpose: it layers over Odoo's compiled bundle without having
+ * to match internal SCSS variable names, which change between versions.
+ */
+
+:root {
+  --prisma-blue: #2563eb; /* Luumos Blue   — primary accent */
+  --prisma-deep: #1e40af; /* Luumos Deep   — pressed / active */
+  --prisma-bright: #38bdf8; /* Luumos Bright — focus rings */
+  --prisma-ink: #14161c; /* near-black, faint cool cast */
+  --prisma-muted: #565b67;
+  --prisma-hairline: #e7ebf2;
+
+  /* Odoo's own brand hooks, so anything reading them picks up the blue. */
+  --o-brand-primary: var(--prisma-blue);
+  --o-brand-odoo: var(--prisma-blue);
+  --primary: var(--prisma-blue);
+  --link-color: var(--prisma-blue);
+}
+
+/* ------------------------------------------------------------- navbar */
+/* Transparent over the app canvas, separated by a hairline instead of a
+   colour block. */
+.o_main_navbar {
+  background-color: transparent !important;
+  background-image: none !important;
+  border-bottom: 1px solid var(--prisma-hairline) !important;
+  color: var(--prisma-ink) !important;
+}
+
+.o_main_navbar,
+.o_main_navbar a,
+.o_main_navbar button,
+.o_main_navbar .o_menu_brand,
+.o_main_navbar .dropdown-toggle,
+.o_main_navbar .o_nav_entry,
+.o_main_navbar .oi,
+.o_main_navbar .fa {
+  color: var(--prisma-ink) !important;
+}
+
+.o_main_navbar .o_menu_brand {
+  font-weight: 600;
+}
+
+/* Hover/active read as a tint of the accent, never a fill. */
+.o_main_navbar .o_nav_entry:hover,
+.o_main_navbar .dropdown-toggle:hover,
+.o_main_navbar .show > .dropdown-toggle,
+.o_main_navbar .o_menu_sections .dropdown-item:hover {
+  background-color: rgba(37, 99, 235, 0.08) !important;
+  color: var(--prisma-deep) !important;
+}
+
+.o_main_navbar .o_nav_entry.active,
+.o_main_navbar .o_menu_sections .o_nav_entry.active {
+  box-shadow: inset 0 -2px 0 0 var(--prisma-blue);
+}
+
+/* The systray avatar/badges inherit white from the old violet bar. */
+.o_main_navbar .o_menu_systray .badge {
+  background-color: var(--prisma-blue) !important;
+  color: #fff !important;
+}
+
+/* --------------------------------------------------------- app drawer */
+.o_home_menu,
+.o_app_menu {
+  background-color: #fafbfc;
+}
+
+/* ------------------------------------------------------------ actions */
+.btn-primary,
+.o_form_button_save,
+.btn-primary:not(:disabled):not(.disabled) {
+  background-color: var(--prisma-blue) !important;
+  border-color: var(--prisma-blue) !important;
+  color: #fff !important;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active,
+.o_form_button_save:hover {
+  background-color: var(--prisma-deep) !important;
+  border-color: var(--prisma-deep) !important;
+}
+
+.btn-secondary,
+.btn-outline-primary {
+  color: var(--prisma-blue) !important;
+  border-color: var(--prisma-hairline) !important;
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--prisma-blue) !important;
+  color: #fff !important;
+}
+
+/* ------------------------------------------------- links & selection */
+a,
+.o_form_uri,
+.o_field_widget a {
+  color: var(--prisma-blue);
+}
+
+a:hover,
+.o_form_uri:hover {
+  color: var(--prisma-deep);
+}
+
+.o_searchview_facet .o_searchview_facet_label,
+.o_cp_switch_buttons .btn.active,
+.nav-link.active,
+.o_notebook .nav-link.active {
+  color: var(--prisma-blue) !important;
+  border-color: var(--prisma-blue) !important;
+}
+
+.o_list_table tbody tr.o_data_row.o_row_selected,
+.o_list_table .o_data_row td.o_data_cell.o_selected_row {
+  background-color: rgba(37, 99, 235, 0.06) !important;
+}
+
+/* Focus rings: the bright end of the gradient, used only here. */
+.form-control:focus,
+.o_input:focus,
+.btn:focus {
+  border-color: var(--prisma-blue) !important;
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.35) !important;
+}
+
+/* Odoo paints several chrome bits with the brand violet directly. */
+.o_web_client .text-primary,
+.o_form_view .oe_title .text-primary {
+  color: var(--prisma-blue) !important;
+}
