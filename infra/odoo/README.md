@@ -120,6 +120,30 @@ docker compose restart odoo
 `--without-demo=all` matters: demo data in a system that will hold real books is
 a mess to unpick later.
 
+**Then apply the Swiss chart — installing `l10n_ch` is not enough.** A database
+created this way has no country yet, so Odoo loads the *generic* chart
+(`generic_coa`, 51 accounts, placeholder 15% taxes). The localisation module
+sits installed but unapplied, which looks fine until you notice the VAT rates
+are not Swiss. Set the country first, then load the template:
+
+```bash
+printf '%s\n' \
+  'company = env["res.company"].browse(1)' \
+  'company.partner_id.country_id = env.ref("base.ch").id' \
+  'env.cr.commit()' \
+  'env["account.chart.template"].try_loading("ch", company=company, install_demo=False)' \
+  'env.cr.commit()' \
+  'print("CHART:", company.chart_template, company.currency_id.name)' \
+| docker compose run --rm --no-deps -T odoo odoo shell \
+    -c /etc/odoo/odoo.conf -d prisma --no-http
+```
+
+Expect `CHART: ch CHF`, ~215 accounts, and Swiss VAT at 8.1 / 2.6 / 3.8 %
+(the 7.7 / 2.5 / 3.7 entries are the pre-2024 rates, kept deliberately so
+historical documents still compute correctly). This only works while the
+database has **zero journal entries** — after that, changing chart template is
+blocked and a rebuild is the honest fix.
+
 **4. Verify** — every line should read as shown:
 
 ```bash
