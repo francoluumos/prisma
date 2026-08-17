@@ -7,11 +7,22 @@
 
 	encode gzip zstd
 
+	# Belt and braces: even if list_db were ever flipped back on, the database
+	# manager stays unreachable from outside. dbfilter pins this instance to a
+	# single database, so nothing here is legitimately needed.
+	#
+	# This MUST come before the catch-all handle below. `handle` blocks are
+	# mutually exclusive and evaluated in the order written, so a catch-all
+	# placed first swallows every request — and a bare `respond` after them
+	# never runs, because Caddy sorts `handle` ahead of it.
+	handle /web/database/* {
+		respond 404
+	}
+
 	# Odoo 19 serves live updates (chat, activity) over a websocket on its
 	# gevent port, not the main one. Without this route the UI loads but
 	# notifications silently never arrive.
-	@websocket path /websocket
-	handle @websocket {
+	handle /websocket {
 		reverse_proxy odoo:8072
 	}
 
@@ -23,11 +34,6 @@
 	handle {
 		reverse_proxy odoo:8069
 	}
-
-	# Belt and braces: even if list_db were ever flipped back on, the database
-	# manager stays unreachable from outside.
-	@dbmanager path /web/database/manager /web/database/selector /web/database/create /web/database/duplicate /web/database/drop /web/database/backup /web/database/restore
-	respond @dbmanager 404
 
 	header {
 		Strict-Transport-Security "max-age=31536000; includeSubDomains"

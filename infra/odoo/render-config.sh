@@ -22,9 +22,23 @@ sed -e "s|__ADMIN_PASSWD__|${ADMIN_PASSWD}|g" \
     -e "s|__DB_NAME__|${DB_NAME}|g" \
     odoo.conf.template > config/odoo.conf
 
-# Odoo refuses to start on a world-readable config containing a password.
+# The file holds two passwords, so it must not be world-readable. But it is
+# bind-mounted into a container that runs as uid 100 / gid 101 (`odoo`), and a
+# root-owned 0640 file is unreadable there — Odoo then parses an empty config
+# and dies with `NoSectionError: 'options'`, which reads like a syntax error
+# rather than a permission one. Group-own it to the container's gid so 0640
+# satisfies both constraints.
+ODOO_UID=100
+ODOO_GID=101
 chmod 640 config/odoo.conf
-echo "rendered config/odoo.conf (mode 640)"
+if [ "$(id -u)" -eq 0 ]; then
+  chown "root:${ODOO_GID}" config/odoo.conf
+  echo "rendered config/odoo.conf (mode 640, group ${ODOO_GID} so the container can read it)"
+else
+  echo "rendered config/odoo.conf (mode 640)"
+  echo "NOTE: not root, so group ownership was left alone. If Odoo reports" >&2
+  echo "      NoSectionError: 'options', run: sudo chown root:${ODOO_GID} config/odoo.conf" >&2
+fi
 
 if grep -q '__[A-Z_]*__' config/odoo.conf; then
   echo "WARNING: unsubstituted placeholders remain:" >&2

@@ -158,9 +158,13 @@ an Odoo with no attachments or invoice PDFs. It verifies the dump reads back and
 fails loudly if not.
 
 ```bash
-sudo crontab -e
-15 3 * * * /opt/prisma-erp/backup.sh >> /var/log/prisma-erp-backup.log 2>&1
+( crontab -l 2>/dev/null | grep -v backup.sh || true; \
+  echo "15 3 * * * cd /opt/prisma-erp && ./backup.sh >> /var/log/prisma-erp-backup.log 2>&1" ) | crontab -
 ```
+
+The `|| true` is load-bearing: under `set -e`, `grep` exits 1 on an empty
+crontab and aborts the subshell before the `echo`, quietly installing an empty
+crontab and no backup job at all.
 
 It writes to the same VPS, which is not a backup strategy on its own — copy them
 off-box. Hostinger snapshots are not a substitute: point-in-time, easily
