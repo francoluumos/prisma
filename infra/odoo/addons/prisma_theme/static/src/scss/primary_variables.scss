@@ -1,0 +1,34 @@
+// Odoo brand colour, set at COMPILE time.
+//
+// This file is the actual fix. CSS custom properties cannot recolour Odoo,
+// because most of its chrome is SCSS-compiled to literal values long before a
+// browser sees a variable: radio/checkbox fills, the sidebar active state, the
+// Filters/Group By icons, `darken()` results, and — decisively — the checkbox
+// tick, which is an inline SVG data-URI with the hex baked inside it. No
+// runtime override can reach any of that.
+//
+// Odoo's web/static/src/scss/primary_variables.scss derives everything from a
+// single value, and every declaration carries `!default`:
+//
+//     $o-community-color: #71639e !default;
+//     $o-brand-odoo:      $o-community-color !default;
+//     $o-brand-primary:   $o-community-color !default;
+//     $o-action:          $o-brand-primary  !default;
+//     $o-main-link-color: darken($o-brand-primary, 5%) !default;
+//     $o-input-border-required: $o-brand-primary !default;
+//     // plus the whole btn-primary colour map
+//
+// `!default` assigns only if the variable is still unset, so defining
+// $o-community-color first makes every one of those follow automatically.
+// That is why the manifest registers this with ('prepend', ...) into
+// web._assets_primary_variables — it has to compile BEFORE Odoo's own file.
+//
+// Keep this file to variable definitions only; the primary-variables bundle
+// is not allowed to emit CSS rules.
+
+$o-community-color: #2563eb; // Luumos Blue — luumos-agency/DESIGN.md
+
+// Odoo Community reads $o-community-color, but $o-brand-primary falls back to
+// $o-enterprise-color on an Enterprise build. Set both so the theme survives
+// if the Enterprise addons are ever mounted.
+$o-enterprise-color: #2563eb;

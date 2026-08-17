@@ -133,6 +133,12 @@ a:hover,
   border-color: rgba(37, 99, 235, 0.1);
 }
 
+/* The rich-text editor's table-size picker writes #71639e as a literal — the
+   single place in the whole compiled bundle that survives the SCSS variable. */
+.o-we-tablepicker .o-we-cell.active {
+  background-color: var(--prisma-blue);
+}
+
 .o_list_table tbody tr.o_data_row.o_row_selected,
 .o_list_table .o_data_row td.o_data_cell.o_selected_row {
   background-color: rgba(37, 99, 235, 0.06);

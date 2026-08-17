@@ -16,6 +16,15 @@ internal variable names across upgrades.
     "license": "LGPL-3",
     "depends": ["web"],
     "assets": {
+        # The colour itself is an SCSS variable resolved at compile time — see
+        # the long note in primary_variables.scss. `prepend` is required: it
+        # must be defined before Odoo's own primary_variables.scss, whose
+        # declarations are all `!default` and therefore only apply if unset.
+        "web._assets_primary_variables": [
+            ("prepend", "prisma_theme/static/src/scss/primary_variables.scss"),
+        ],
+        # Structural tweaks only (transparent navbar, hairline). The colour
+        # does not live here.
         "web.assets_backend": [
             "prisma_theme/static/src/css/theme.css",
         ],
