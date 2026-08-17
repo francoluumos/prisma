@@ -4,9 +4,16 @@ dist
 .DS_Store
 .vite
 
+# Vercel CLI link state (project/org IDs) — local machine state
+.vercel/
+
 # Local agent / editor tooling — not part of the site
 .claude/
 .agents/
 .codex/
 .cursor/
 .impeccable/
+
+# Odoo stack secrets — rendered config + env, never commit
+infra/odoo/.env
+infra/odoo/config/

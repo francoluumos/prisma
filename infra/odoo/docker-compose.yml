@@ -1,0 +1,78 @@
+# Prisma ERP — Odoo 19 Community + Postgres + Caddy (automatic TLS)
+#
+# Runs on Hostinger VPS 1910052 (191.215.41.153) ONLY. VPS 1806948 — the
+# Docker/Traefik box — is out of scope and must not be touched.
+#
+# Nothing but Caddy publishes a port. Odoo is reachable only over the internal
+# compose network, which is the whole point: the stock install this replaces sat
+# on 0.0.0.0:8069 in plain HTTP with its database manager open to the internet.
+
+name: prisma-erp
+
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+      # Odoo creates its own database; this is just the maintenance DB.
+      POSTGRES_DB: postgres
+      # Odoo does its own filtering; keep the default collation deterministic.
+      POSTGRES_INITDB_ARGS: "--encoding=UTF8 --lc-collate=C --lc-ctype=C"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      # Odoo fails confusingly if it starts before Postgres accepts connections.
+      test: ["CMD-SHELL", "pg_isready -U odoo -d postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    # No `ports:` — Postgres must never be reachable from outside the host.
+
+  odoo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      # Filestore + sessions. Losing this loses every uploaded attachment, so it
+      # is backed up alongside the database — see backup.sh.
+      - odoo-data:/var/lib/odoo
+      # Rendered from odoo.conf.template by render-config.sh; holds secrets, so
+      # it is gitignored.
+      - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
+      - ./addons:/mnt/extra-addons:ro
+    # Again no `ports:` — Caddy reaches it over the compose network.
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - odoo
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      # The hostname Caddy requests a certificate for. srv1910052.hstgr.cloud
+      # already resolves to this VPS; switch to erp.prismacycling.ch once that
+      # A record exists at Hostpoint.
+      ODOO_HOSTNAME: ${ODOO_HOSTNAME:?set ODOO_HOSTNAME in .env}
+      ACME_EMAIL: ${ACME_EMAIL:?set ACME_EMAIL in .env}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+
+volumes:
+  db-data:
+  odoo-data:
+  caddy-data:
+  caddy-config:

@@ -1,0 +1,46 @@
+# TLS terminator for Prisma ERP. Caddy fetches and renews a Let's Encrypt
+# certificate automatically, which is the fastest way off the plain-HTTP login
+# page the stock install served.
+
+{$ODOO_HOSTNAME} {
+	tls {$ACME_EMAIL}
+
+	encode gzip zstd
+
+	# Odoo 19 serves live updates (chat, activity) over a websocket on its
+	# gevent port, not the main one. Without this route the UI loads but
+	# notifications silently never arrive.
+	@websocket path /websocket
+	handle @websocket {
+		reverse_proxy odoo:8072
+	}
+
+	# Long-lived polling on the same gevent port.
+	handle /longpolling/* {
+		reverse_proxy odoo:8072
+	}
+
+	handle {
+		reverse_proxy odoo:8069
+	}
+
+	# Belt and braces: even if list_db were ever flipped back on, the database
+	# manager stays unreachable from outside.
+	@dbmanager path /web/database/manager /web/database/selector /web/database/create /web/database/duplicate /web/database/drop /web/database/backup /web/database/restore
+	respond @dbmanager 404
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "SAMEORIGIN"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	log {
+		output file /data/access.log {
+			roll_size 20mb
+			roll_keep 5
+		}
+	}
+}

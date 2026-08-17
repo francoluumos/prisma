@@ -1,0 +1,58 @@
+; Prisma ERP — Odoo server config.
+;
+; Rendered to config/odoo.conf by render-config.sh, which substitutes the
+; double-underscore placeholders below from .env. Edit THIS file, never
+; config/odoo.conf — that one holds secrets and is gitignored.
+;
+; (Don't write a literal example of the placeholder syntax in a comment: the
+; render script greps for leftover placeholders and would flag it.)
+
+[options]
+; --- credentials ------------------------------------------------------------
+; Master password. Guards database create/drop/duplicate/backup. The stock
+; install this replaces shipped a default one with the manager exposed to the
+; internet, which is how a public Odoo gets its database dropped by a stranger.
+admin_passwd = __ADMIN_PASSWD__
+
+db_host = db
+db_port = 5432
+db_user = odoo
+db_password = __DB_PASSWORD__
+
+; --- what the outside world can see -----------------------------------------
+; Disables the database manager UI and the db list RPC entirely. With this off,
+; /web/database/manager 404s and `db.list` returns nothing.
+list_db = False
+; Serve exactly one database, so no selector is ever shown.
+dbfilter = ^__DB_NAME__$
+; Trust X-Forwarded-* from Caddy. Required for correct URLs behind the proxy —
+; and only safe BECAUSE Odoo publishes no port of its own.
+proxy_mode = True
+
+; --- addons -----------------------------------------------------------------
+; OCA modules arrive via pip into the image's site-packages (see Dockerfile);
+; this path is for anything hand-dropped into ./addons.
+addons_path = /mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons
+data_dir = /var/lib/odoo
+
+; --- workers ----------------------------------------------------------------
+; KVM 2 = 2 vCPU / 8 GB. Odoo's rule of thumb is ~2 workers per core, but each
+; worker is memory-hungry and Postgres shares this box, so 3 + 1 cron is the
+; honest ceiling here rather than the theoretical 5.
+workers = 3
+max_cron_threads = 1
+
+; Per-worker memory ceilings (bytes). Soft = finish the request then recycle;
+; hard = kill immediately. 3 workers x 2.5 GB hard stays inside 8 GB with room
+; for Postgres.
+limit_memory_soft = 1610612736
+limit_memory_hard = 2684354560
+limit_time_cpu = 600
+limit_time_real = 1200
+; Long report exports would otherwise be killed mid-run by limit_time_real.
+limit_time_real_cron = 1800
+limit_request = 8192
+
+; --- logging ----------------------------------------------------------------
+log_level = info
+logfile = None
