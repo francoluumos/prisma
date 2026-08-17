@@ -194,6 +194,44 @@ It writes to the same VPS, which is not a backup strategy on its own — copy th
 off-box. Hostinger snapshots are not a substitute: point-in-time, easily
 overwritten, and gone with the subscription.
 
+## Supabase → Odoo order sync
+
+`connector/sync.mjs`, run as the `sync` compose service (profile `tools`, so
+`up` never starts it).
+
+**It is deliberately not in the checkout path.** Supabase stays the capture
+buffer — `create_order()` is idempotent on the Stripe session id and cannot
+lose a paid order. If the connector meets a restarting Odoo, the worst case is
+"syncs on the next run", never "customer paid and no order exists". Coupling
+the money path to a single-VPS ERP's uptime is the one mistake worth designing
+out from the start.
+
+Idempotency runs through Odoo's own `ir.model.data`: every synced row gets
+`prisma.<model>_<supabase id>`, checked before create. Re-running is safe and a
+half-finished run resumes.
+
+Configure the four `.env` vars (see `.env.example`), then:
+
+```bash
+docker compose --profile tools run --rm sync --dry-run   # resolve + print, write nothing
+docker compose --profile tools run --rm sync             # for real
+```
+
+Schedule it once it has run clean by hand:
+
+```bash
+( crontab -l 2>/dev/null | grep -v 'profile tools' || true; \
+  echo "*/15 * * * * cd /opt/prisma-erp && docker compose --profile tools run --rm sync >> /var/log/prisma-erp-sync.log 2>&1" ) | crontab -
+```
+
+Only orders in state `sale`/`done` sync — draft carts are not the ERP's
+business. A failing order logs and does not stop the batch; it retries next
+run, and a non-zero exit means at least one failed.
+
+Use a **dedicated Odoo user** for `ODOO_SYNC_USER`, not admin, so the sync's
+access can be revoked without locking you out. API key: avatar → My Profile →
+Account Security → New API Key.
+
 ## Moving to erp.prismacycling.ch
 
 `erp.prismacycling.ch` currently resolves to `217.26.48.101`, Hostpoint's

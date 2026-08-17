@@ -71,6 +71,28 @@ services:
       - caddy-data:/data
       - caddy-config:/config
 
+  # Supabase -> Odoo order sync. Not started by `up` (profile "tools") — it is
+  # a scheduled one-shot, run from cron:
+  #   docker compose run --rm sync
+  # Living on the compose network is what lets it reach odoo:8069 without
+  # Odoo publishing a port to the host.
+  sync:
+    profiles: ["tools"]
+    build:
+      context: ./connector
+    environment:
+      # Soft defaults (`:-`), NOT required-variable syntax (`:?`). Compose
+      # interpolates the entire file no matter which profile you ask for, so a
+      # `:?` here makes `docker compose up` fail for db/odoo/caddy too, on a
+      # box where the sync is not configured yet. sync.mjs validates these at
+      # runtime and exits 2 with the missing name.
+      SUPABASE_URL: ${SUPABASE_URL:-}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY:-}
+      ODOO_URL: http://odoo:8069
+      ODOO_DB: ${DB_NAME:-prisma}
+      ODOO_USER: ${ODOO_SYNC_USER:-}
+      ODOO_API_KEY: ${ODOO_SYNC_API_KEY:-}
+
 volumes:
   db-data:
   odoo-data:
