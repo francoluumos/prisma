@@ -23,6 +23,11 @@ else
   git -C addons-repo fetch --quiet --all --prune
 fi
 
+# A fresh clone has `main` checked out, and git refuses to hand the same branch
+# to a worktree ("'main' is already used by worktree at ..."). Detach the
+# clone's HEAD so it holds no branch and both worktrees can take one.
+git -C addons-repo checkout --quiet --detach HEAD
+
 mkdir -p addons
 for BRANCH in main staging; do
   WT="addons/$BRANCH"

@@ -51,8 +51,11 @@ docker compose run --rm --no-deps -T --user root odoo bash -lc "
   fi" >/dev/null
 
 echo "  neutralizing (mail off, crons paused, payments to test)"
+# The subcommand comes FIRST: `odoo neutralize -c ... -d ...`. Putting -c
+# before it makes Odoo parse the whole thing as server arguments and fail with
+# "unrecognized parameters: neutralize".
 docker compose run --rm --no-deps -T odoo-staging \
-  odoo -c /etc/odoo/odoo.conf neutralize -d "$STAGING_DB" 2>&1 | tail -3
+  odoo neutralize -c /etc/odoo/odoo.conf -d "$STAGING_DB" 2>&1 | tail -3
 
 docker compose start odoo-staging >/dev/null
 echo "  done — $STAGING_DB is a neutralised copy of $PROD_DB"
