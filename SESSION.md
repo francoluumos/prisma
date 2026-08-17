@@ -39,9 +39,12 @@ A working log to pick the project back up. For strategic/visual context see
 >
 > **Deploy / infra (LIVE)**
 > - **GitHub:** `git@github.com-luumos:francoluumos/prisma.git` on `main`. ⚠️ Must push via
->   the **`github.com-luumos` SSH alias** (`~/.ssh/config` → `id_ed25519_luumos`, authenticates
->   as `francoluumos`). The default `git@github.com` key is `francoseinerdq` and is **denied**.
->   Remote is already set correctly, so `git push` just works.
+>   the **`github.com-luumos` SSH alias**, whose `~/.ssh/config` entry points at
+>   **`id_ed25519_francoluumos`** — the only key with write access. Every other key
+>   (`id_ed25519_luumos`, `id_ed25519`, `id_ed25519_francosteiner`) maps to
+>   `francoseinerdq` and is **denied**. Remote + alias are both set correctly, so plain
+>   `git push` works. (Until 2026-08-17 the alias pointed at `id_ed25519_luumos` and
+>   every push needed a `GIT_SSH_COMMAND` override; that's fixed.)
 > - **Vercel:** project `luumos-projects/prisma`, auto-detects Vite, auto-deploys on push.
 >   `.claude/ .agents/ .codex/ .cursor/ .impeccable/` + `node_modules`/`dist` are gitignored.
 > - **Domain:** `prismacycling.ch` live, primary = **bare apex**, `www` **308-redirects** to it.
@@ -186,11 +189,18 @@ reserve/parallax) and `src/configurator.ts` (build panel/checkout bar/dialogs);
 - **Colour studio** (`src/paint/*`): 2D canvas engine recolours frame + wheels
   independently with any colour or an uploaded pattern, preserving 3D shading —
   `(colour × AO-shade) screened-with spec` per region. Falls back to the curated
-  image swap if unsupported. **Assets under `public/img/paint/aero/side/` are
-  PLACEHOLDERS** from `scripts/gen-paint-placeholders.py` (frame = whole silhouette
-  minus wheel discs; synthetic wheels). **Replace with the real 3D export**: per
-  region a `*.shade` (RGB=AO, A=mask) + `*.spec` pass, plus a neutral `base`,
-  pixel-registered, straight-alpha sRGB — see the paint asset spec in the plan.
+  image swap if unsupported. **Assets under `public/img/paint/aero/side/` are now
+  derived from the real snow-white studio renders** by
+  `scripts/derive-paint-passes.py` (2026-08-17) — matte luminance = AO, and
+  `(metallic − matte) / (1 − matte)` = the specular, because screening white at
+  alpha `a` yields `dst + a(1−dst)`. The frame mask lives in
+  `product/prisma-aero-side-frame.mask.png` (authoring input, deliberately **not**
+  in `public/` so it doesn't deploy unused); the engine reads the mask from
+  `frame.shade`'s alpha. Re-run the script after editing the mask — an existing
+  mask always wins, `--rederive` overwrites it.
+  (The earlier note calling these placeholders from `gen-paint-placeholders.py`
+  with "synthetic wheels" was wrong even then: `base.png` was always a real
+  full-bike render.)
 - **Gemini assistant** (`supabase/functions/assistant/` + `src/assistant/*`): fit
   chat (streaming, forced `recommendBuild` tool call enum-constrained to catalog) +
   vision palette from inspiration images; voice via Web Speech API. Frontend
@@ -198,9 +208,17 @@ reserve/parallax) and `src/configurator.ts` (build panel/checkout bar/dialogs);
 
 ## Beta — open items / next steps
 
-- [ ] **Replace placeholder paint assets** with the real per-part 3D export
-      (frame vs wheels vs base, AO + spec passes). Then extend to more angles
-      (`public/img/paint/aero/<angle>/`) and to Terra.
+- [x] **Replace placeholder paint assets** — done 2026-08-17, derived from the
+      snow-white renders (see above).
+- [ ] **Hand-author the frame mask.** The automatic one (PSD frame isolation minus
+      the dark groupset) leaves 1.17% of the frame unpainted as hairline seams —
+      visible as a thin grey line at the fork crown. Franco is redoing the alpha in
+      Photoshop; drop it over `product/prisma-aero-side-frame.mask.png` and re-run
+      `python3 scripts/derive-paint-passes.py`.
+- [ ] **Wheels region** still has no mask, so the wheel colour picker has no effect.
+      Needs a per-part export or a hand-cut wheel alpha.
+- [ ] Extend to more angles (`public/img/paint/aero/<angle>/`) and to Terra — each
+      needs its own matte + metallic pair at the same camera.
 - [ ] **Deploy the edge function**: `supabase secrets set GEMINI_API_KEY=…` then
       `supabase functions deploy assistant`; set the two `VITE_SUPABASE_*` envs in
       Vercel + `.env.local` (see `supabase/functions/assistant/README.md`).
