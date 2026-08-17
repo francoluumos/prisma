@@ -38,8 +38,9 @@ data_dir = /var/lib/odoo
 ; --- workers ----------------------------------------------------------------
 ; KVM 2 = 2 vCPU / 8 GB. Odoo's rule of thumb is ~2 workers per core, but each
 ; worker is memory-hungry and Postgres shares this box, so 3 + 1 cron is the
-; honest ceiling here rather than the theoretical 5.
-workers = 3
+; honest ceiling here rather than the theoretical 5. Staging renders with 1,
+; since two full instances on one box is what actually exhausts the RAM.
+workers = __WORKERS__
 max_cron_threads = 1
 
 ; Per-worker memory ceilings (bytes). Soft = finish the request then recycle;

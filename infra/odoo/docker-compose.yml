@@ -49,8 +49,34 @@ services:
       # Rendered from odoo.conf.template by render-config.sh; holds secrets, so
       # it is gitignored.
       - ./config/odoo.conf:/etc/odoo/odoo.conf:ro
-      - ./addons:/mnt/extra-addons:ro
+      # Git worktree of the custom-addons repo, branch `main`.
+      - ./addons/main:/mnt/extra-addons:ro
     # Again no `ports:` — Caddy reaches it over the compose network.
+
+  # Staging: same image, branch `staging`, its own database and filestore.
+  #
+  # Bound to 127.0.0.1 only, NOT published through Caddy. Staging carries a
+  # neutralised copy of production, i.e. real customer records — it has no
+  # business being on the public internet. Reach it over an SSH tunnel:
+  #   ssh -L 8070:127.0.0.1:8070 prisma-erp   ->  http://localhost:8070
+  odoo-staging:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      HOST: db
+      USER: odoo
+      PASSWORD: ${DB_PASSWORD:?set DB_PASSWORD in .env}
+    volumes:
+      - odoo-staging-data:/var/lib/odoo
+      - ./config/odoo-staging.conf:/etc/odoo/odoo.conf:ro
+      - ./addons/staging:/mnt/extra-addons:ro
+    ports:
+      - "127.0.0.1:8070:8069"
 
   caddy:
     image: caddy:2-alpine
@@ -96,5 +122,6 @@ services:
 volumes:
   db-data:
   odoo-data:
+  odoo-staging-data:
   caddy-data:
   caddy-config:
