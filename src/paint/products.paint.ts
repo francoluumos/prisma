@@ -2,9 +2,11 @@
    Paintable-product registry — maps each product/angle to its asset set.
 
    Assets live under public/img/paint/<product>/<angle>/. Today only aero/side
-   is authored (placeholder layers from scripts/gen-paint-placeholders.py, to be
-   replaced by the real 3D export). Add angles/products by dropping in the passes
-   and extending `angles` here.
+   is authored: the passes are derived from the snow-white studio renders by
+   scripts/derive-paint-passes.py (matte = AO, metallic - matte = specular),
+   masked by product/prisma-aero-side-frame.mask.png. Re-run that script after
+   editing the mask. Add angles/products by dropping in the passes and extending
+   `angles` here.
    ---------------------------------------------------------------- */
 import type { PaintableProduct } from "./types";
 
