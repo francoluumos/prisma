@@ -17,3 +17,9 @@ dist
 # Odoo stack secrets — rendered config + env, never commit
 infra/odoo/.env
 infra/odoo/config/
+
+# Odoo custom addons live in their own repo (francoluumos/prisma-odoo).
+# bootstrap-addons.sh clones it here and checks out one git worktree per
+# branch at runtime — these are never repo content.
+infra/odoo/addons/
+infra/odoo/addons-repo/

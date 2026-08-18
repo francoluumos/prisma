@@ -194,6 +194,38 @@ It writes to the same VPS, which is not a backup strategy on its own — copy th
 off-box. Hostinger snapshots are not a substitute: point-in-time, easily
 overwritten, and gone with the subscription.
 
+## Custom modules live in another repo
+
+Modules are **not** in this repo. They live in
+[`francoluumos/prisma-odoo`](https://github.com/francoluumos/prisma-odoo), laid
+out the way Odoo.sh expects (modules at the repository root), so it can be
+pointed at Odoo.sh later without restructuring — and so touching an Odoo module
+does not redeploy the storefront.
+
+Branches are environments:
+
+| Branch    | Environment | Database         | Reachable at |
+| --------- | ----------- | ---------------- | ------------ |
+| `main`    | production  | `prisma`         | the public hostname |
+| `staging` | staging     | `prisma_staging` | SSH tunnel only |
+
+```bash
+./bootstrap-addons.sh              # once: clone + a worktree per branch
+./deploy.sh main                   # or staging; no-op if the head has not moved
+./refresh-staging.sh               # prod copy -> staging, neutralised
+ssh -L 8070:127.0.0.1:8070 prisma-erp   # then http://localhost:8070
+```
+
+`poll.sh` runs from cron every 2 minutes and deploys whichever branch moved.
+Pull-based on purpose: the firewall admits SSH only from Franco's IP, so a
+push-based deploy would mean opening port 22 to GitHub's entire IP range.
+
+`addons/` and `addons-repo/` are created here at runtime and are gitignored.
+
+**Staging carries a neutralised copy of production — real customer records.**
+That is why it is bound to `127.0.0.1` and not published through Caddy. If it
+ever needs a public hostname, put authentication in front of it.
+
 ## Supabase → Odoo order sync
 
 `connector/sync.mjs`, run as the `sync` compose service (profile `tools`, so
